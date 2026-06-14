@@ -1,7 +1,7 @@
 /* Monero Team — application shell.
  *
  * Self-hosted, token-driven. No shadows, no gradients, no external origins.
- * Every colour, space, and type value below resolves to a token in :root. */
+ * Every colour, space, and type value below resolves to a canonical token. */
 
 /* ---------- Self-hosted fonts (OFL) ---------- */
 
@@ -35,52 +35,63 @@
 }
 
 /* ---------- Design tokens ---------- */
+/* Locked design fundament (Этап 0). Mirror of monero-team-design-tokens.md —
+ * do not edit values here; change the source of truth and re-mirror. */
 
 :root {
-  /* Brand */
-  --accent: #f60000;
-  --accent-2: #ff6a00;
+  /* Базовая палитра */
+  --c-void-black: #0E0E12;   /* фон (основной)  */
+  --c-off-white:  #F4F3EE;   /* текст           */
+  --c-orange:     #FF6B1A;   /* единственный акцент */
 
-  /* Surfaces */
-  --bg: #0e0f11;
-  --surface: #16181b;
-  --surface-2: #1d2024;
-  --border: #2a2e33;
-  --border-strong: #3a3f46;
+  /* Нейтральная шкала — на ней строится ВСЯ иерархия (900 тёмный → 100 светлый) */
+  --grey-900: #0E0E12;       /* = void black, фон            */
+  --grey-850: #16161B;       /* surface (приподнятая поверхность) */
+  --grey-800: #1C1C22;       /* surface alt                  */
+  --grey-700: #26262E;       /* border (границы 0.5px)       */
+  --grey-600: #32323C;       /* border strong / разделители  */
+  --grey-500: #4A4A53;       /* disabled / иконки приглушённо */
+  --grey-400: #6A6A72;       /* muted text (soft) — мета     */
+  --grey-300: #9A9AA2;       /* muted text (strong) — описания */
+  --grey-200: #C8C7C2;       /* near-white вторичный         */
+  --grey-100: #F4F3EE;       /* = off white, основной текст  */
 
-  /* Text */
-  --text: #e8eaed;
-  --text-muted: #9aa0a6;
-  --text-faint: #6b7178;
+  /* Статусные цвета — ТОЛЬКО метки статуса в директории, нигде больше */
+  --status-verified:     #5E9C7A;  /* спокойный зелёный   */
+  --status-admitted:     #5A7DA8;  /* спокойный синий     */
+  --status-questionable: #C9923E;  /* янтарный            */
+  --status-scam:         #B0524B;  /* сдержанный красный  */
 
-  /* Typography */
-  --font-sans: "Inter Tight", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
-  --fs-xs: 0.8125rem;
-  --fs-sm: 0.9375rem;
-  --fs-base: 1rem;
-  --fs-lg: 1.25rem;
-  --fs-xl: 1.75rem;
-  --fs-2xl: 2.5rem;
-  --lh-tight: 1.2;
-  --lh-base: 1.6;
+  /* Семантические алиасы */
+  --bg:            var(--grey-900);
+  --surface:       var(--grey-850);
+  --border:        var(--grey-700);
+  --border-strong: var(--grey-600);
+  --text:          var(--grey-100);
+  --text-muted:    var(--grey-300);
+  --text-meta:     var(--grey-400);
+  --accent:        var(--c-orange);
 
-  /* Space scale */
-  --sp-1: 0.25rem;
-  --sp-2: 0.5rem;
-  --sp-3: 0.75rem;
-  --sp-4: 1rem;
-  --sp-5: 1.5rem;
-  --sp-6: 2rem;
-  --sp-7: 3rem;
-  --sp-8: 4rem;
+  /* Шкала отступов (rem-ритм) */
+  --space-1: 0.25rem;  /*  4px */
+  --space-2: 0.5rem;   /*  8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
 
-  /* Geometry */
-  --radius: 6px;
-  --radius-pill: 999px;
-  --border-w: 1px;
-  --measure: 68ch;
-  --container: 64rem;
+  /* Форма */
+  --border-width: 0.5px;
+  --radius-control: 4px;   /* кнопки, инпуты, пилюли   */
+  --radius-card:    6px;   /* карточки                 */
+  --radius-panel:   8px;   /* панели, крупные блоки    */
+  /* теней нет · градиентов нет · glow нет · neon нет */
+
+  /* Семейства */
+  --font-ui:   'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 }
 
 /* ---------- Reset / base ---------- */
@@ -99,34 +110,42 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-sans);
-  font-size: var(--fs-base);
-  line-height: var(--lh-base);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.6;
   font-weight: 400;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
+/* Typo scale — canonical steps only (see monero-team-design-tokens.md). */
 h1,
 h2,
 h3 {
   font-weight: 500;
-  line-height: var(--lh-tight);
-  margin: 0 0 var(--sp-4) 0;
-  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-4) 0;
 }
 
 h1 {
-  font-size: var(--fs-2xl);
+  font-size: 2rem;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
 }
 h2 {
-  font-size: var(--fs-xl);
+  font-size: 1.5rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+h3 {
+  font-size: 1.25rem;
+  line-height: 1.25;
+  letter-spacing: -0.005em;
 }
 
 p {
-  margin: 0 0 var(--sp-4) 0;
-  max-width: var(--measure);
+  margin: 0 0 var(--space-4) 0;
+  max-width: 68ch;
 }
 
 a {
@@ -134,11 +153,11 @@ a {
   text-decoration: none;
 }
 a:hover {
-  color: var(--accent-2);
+  color: var(--accent);
 }
 a:focus-visible,
 :focus-visible {
-  outline: 2px solid var(--accent-2);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -153,43 +172,43 @@ samp {
 
 .container {
   width: 100%;
-  max-width: var(--container);
+  max-width: 64rem;
   margin-inline: auto;
-  padding-inline: var(--sp-5);
+  padding-inline: var(--space-6);
 }
 
 .skip-link {
   position: absolute;
-  left: var(--sp-4);
+  left: var(--space-4);
   top: -3rem;
-  background: var(--surface-2);
+  background: var(--grey-800);
   color: var(--text);
-  padding: var(--sp-2) var(--sp-4);
-  border: var(--border-w) solid var(--border-strong);
-  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-4);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-control);
   transition: top 0.12s ease;
   z-index: 10;
 }
 .skip-link:focus {
-  top: var(--sp-4);
+  top: var(--space-4);
 }
 
 main {
   flex: 1 0 auto;
-  padding-block: var(--sp-8);
+  padding-block: var(--space-16);
 }
 
 /* ---------- Navbar ---------- */
 
 .site-header {
-  border-bottom: var(--border-w) solid var(--border);
+  border-bottom: var(--border-width) solid var(--border);
   background: var(--surface);
 }
 
 .navbar {
   display: flex;
   align-items: center;
-  gap: var(--sp-6);
+  gap: var(--space-8);
   min-height: 3.5rem;
   flex-wrap: wrap;
 }
@@ -199,7 +218,7 @@ main {
   align-items: baseline;
   gap: 0.35rem;
   font-weight: 500;
-  font-size: var(--fs-lg);
+  font-size: 1.25rem;
   letter-spacing: -0.02em;
   color: var(--text);
 }
@@ -210,7 +229,7 @@ main {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: var(--sp-5);
+  gap: var(--space-6);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -219,8 +238,8 @@ main {
 
 .nav-links a {
   color: var(--text-muted);
-  font-size: var(--fs-sm);
-  padding-block: var(--sp-2);
+  font-size: 1rem;
+  padding-block: var(--space-2);
   border-bottom: 1.5px solid transparent;
 }
 .nav-links a:hover {
@@ -234,38 +253,38 @@ main {
 /* ---------- Page skeleton / coming-soon ---------- */
 
 .page-head {
-  margin-bottom: var(--sp-6);
+  margin-bottom: var(--space-8);
 }
 .page-head p {
   color: var(--text-muted);
-  font-size: var(--fs-lg);
+  font-size: 1.25rem;
 }
 
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: var(--fs-xs);
+  font-size: 0.8125rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--text-faint);
-  margin: 0 0 var(--sp-3) 0;
+  color: var(--text-meta);
+  margin: 0 0 var(--space-3) 0;
 }
 
 .badge {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: var(--fs-xs);
+  font-size: 0.8125rem;
   letter-spacing: 0.04em;
-  color: var(--accent-2);
-  border: var(--border-w) solid var(--border-strong);
-  border-radius: var(--radius-pill);
-  padding: var(--sp-1) var(--sp-3);
+  color: var(--accent);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-control);
+  padding: var(--space-1) var(--space-3);
 }
 
 .coming-soon {
-  margin-top: var(--sp-6);
-  padding: var(--sp-6);
-  border: var(--border-w) solid var(--border);
-  border-radius: var(--radius);
+  margin-top: var(--space-8);
+  padding: var(--space-8);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-panel);
   background: var(--surface);
 }
 .coming-soon p {
@@ -273,72 +292,72 @@ main {
   margin-bottom: 0;
 }
 .coming-soon .badge {
-  margin-bottom: var(--sp-4);
+  margin-bottom: var(--space-4);
 }
 
 /* ---------- Home ---------- */
 
 .hero {
-  padding-block: var(--sp-6) var(--sp-7);
+  padding-block: var(--space-8) var(--space-12);
 }
 .hero .lede {
   color: var(--text-muted);
-  font-size: var(--fs-lg);
-  max-width: var(--measure);
+  font-size: 1.25rem;
+  max-width: 68ch;
 }
 
 .section-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-  gap: var(--sp-4);
-  margin-top: var(--sp-5);
+  gap: var(--space-4);
+  margin-top: var(--space-6);
   padding: 0;
   list-style: none;
 }
 .section-card {
   display: block;
-  border: var(--border-w) solid var(--border);
-  border-radius: var(--radius);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
   background: var(--surface);
-  padding: var(--sp-5);
+  padding: var(--space-6);
 }
 .section-card:hover {
   border-color: var(--border-strong);
   color: var(--text);
 }
 .section-card .name {
-  font-size: var(--fs-lg);
+  font-size: 1.25rem;
   font-weight: 500;
-  margin-bottom: var(--sp-2);
+  margin-bottom: var(--space-2);
 }
 .section-card .desc {
   color: var(--text-muted);
-  font-size: var(--fs-sm);
+  font-size: 1rem;
   margin: 0;
 }
 
 /* ---------- Footer ---------- */
 
 .site-footer {
-  border-top: var(--border-w) solid var(--border);
+  border-top: var(--border-width) solid var(--border);
   background: var(--surface);
-  padding-block: var(--sp-6);
+  padding-block: var(--space-8);
   color: var(--text-muted);
-  font-size: var(--fs-sm);
+  font-size: 1rem;
 }
 .footer-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--sp-6);
+  gap: var(--space-8);
   justify-content: space-between;
 }
 .footer-col h2 {
-  font-size: var(--fs-xs);
+  font-size: 0.8125rem;
   font-family: var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--text-faint);
-  margin-bottom: var(--sp-3);
+  color: var(--text-meta);
+  margin-bottom: var(--space-3);
 }
 .footer-col ul {
   list-style: none;
@@ -346,7 +365,7 @@ main {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--sp-2);
+  gap: var(--space-2);
 }
 .footer-col a {
   color: var(--text-muted);
@@ -358,17 +377,17 @@ main {
 .privacy-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--sp-2);
-  margin-top: var(--sp-4);
+  gap: var(--space-2);
+  margin-top: var(--space-4);
 }
 .privacy-badges .badge {
   color: var(--text-muted);
 }
 
 .colophon {
-  margin-top: var(--sp-5);
-  padding-top: var(--sp-4);
-  border-top: var(--border-w) solid var(--border);
-  color: var(--text-faint);
-  font-size: var(--fs-xs);
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: var(--border-width) solid var(--border);
+  color: var(--text-meta);
+  font-size: 0.8125rem;
 }
