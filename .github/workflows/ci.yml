@@ -38,3 +38,6 @@ jobs:
 
       - name: no external origins (privacy guard)
         run: ./scripts/check-no-external-origins.sh
+
+      - name: design tokens (locked fundament)
+        run: ./scripts/check-design-tokens.sh
