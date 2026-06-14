@@ -1,0 +1,16 @@
+{
+  "slug": "gamma-node",
+  "name": "Gamma node",
+  "category": "node",
+  "status": "questionable",
+  "country": null,
+  "access": ["clearnet", "tor", "i2p"],
+  "kyc": false,
+  "tags": ["multi-access"],
+  "links": {
+    "clearnet": "https://gamma.example",
+    "onion": "http://gammaplaceholder.onion",
+    "i2p": "http://gammaplaceholder.i2p"
+  },
+  "description": "A fictional node reachable on all three access types; valid fixture."
+}

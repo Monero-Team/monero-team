@@ -1,0 +1,12 @@
+{
+  "slug": "dup",
+  "name": "Dup two",
+  "category": "wallet",
+  "status": "admitted",
+  "country": null,
+  "access": ["clearnet"],
+  "kyc": false,
+  "tags": [],
+  "links": { "clearnet": "https://dup-two.example", "onion": null, "i2p": null },
+  "description": "Reuses the slug 'dup' to trigger the duplicate-slug rule."
+}

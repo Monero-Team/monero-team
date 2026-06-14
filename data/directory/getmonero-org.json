@@ -1,0 +1,16 @@
+{
+  "slug": "getmonero-org",
+  "name": "getmonero.org (official project site)",
+  "category": "educational",
+  "status": "admitted",
+  "country": null,
+  "access": ["clearnet"],
+  "kyc": false,
+  "tags": ["official", "documentation"],
+  "links": {
+    "clearnet": "https://www.getmonero.org",
+    "onion": null,
+    "i2p": null
+  },
+  "description": "The official website of the Monero project: documentation, downloads, the user guides, and announcements. Maintained by the Monero community."
+}

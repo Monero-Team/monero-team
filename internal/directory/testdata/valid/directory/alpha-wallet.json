@@ -1,0 +1,12 @@
+{
+  "slug": "alpha-wallet",
+  "name": "Alpha wallet",
+  "category": "wallet",
+  "status": "admitted",
+  "country": "DE",
+  "access": ["clearnet"],
+  "kyc": false,
+  "tags": ["desktop", "open-source"],
+  "links": { "clearnet": "https://alpha.example", "onion": null, "i2p": null },
+  "description": "A fictional clearnet-only wallet used as a valid test fixture."
+}

@@ -1,0 +1,12 @@
+{
+  "slug": "onion-no-suffix",
+  "name": "Onion no suffix",
+  "category": "service",
+  "status": "admitted",
+  "country": null,
+  "access": ["tor"],
+  "kyc": false,
+  "tags": [],
+  "links": { "clearnet": null, "onion": "http://notreallyonion.example", "i2p": null },
+  "description": "Valid except the onion link does not end with .onion."
+}

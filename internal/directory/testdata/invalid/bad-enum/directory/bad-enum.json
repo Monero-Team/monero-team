@@ -1,0 +1,12 @@
+{
+  "slug": "bad-enum",
+  "name": "Bad enum",
+  "category": "notacategory",
+  "status": "admitted",
+  "country": null,
+  "access": ["clearnet"],
+  "kyc": false,
+  "tags": [],
+  "links": { "clearnet": "https://bad-enum.example", "onion": null, "i2p": null },
+  "description": "Valid except the category is not in the enum."
+}

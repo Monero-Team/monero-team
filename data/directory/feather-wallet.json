@@ -1,0 +1,16 @@
+{
+  "slug": "feather-wallet",
+  "name": "Feather wallet",
+  "category": "wallet",
+  "status": "admitted",
+  "country": null,
+  "access": ["clearnet"],
+  "kyc": false,
+  "tags": ["desktop", "lightweight"],
+  "links": {
+    "clearnet": "https://featherwallet.org",
+    "onion": null,
+    "i2p": null
+  },
+  "description": "A free, open-source, lightweight desktop Monero wallet. Non-custodial and requires no account or identity verification."
+}

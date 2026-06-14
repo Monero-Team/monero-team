@@ -1,0 +1,12 @@
+{
+  "slug": "missing-name",
+  "name": "",
+  "category": "wallet",
+  "status": "admitted",
+  "country": null,
+  "access": ["clearnet"],
+  "kyc": false,
+  "tags": [],
+  "links": { "clearnet": "https://missing-name.example", "onion": null, "i2p": null },
+  "description": "Valid except the name field is empty."
+}

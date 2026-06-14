@@ -1,0 +1,16 @@
+{
+  "slug": "example-scam-service",
+  "name": "Example scam service (placeholder)",
+  "category": "service",
+  "status": "scam",
+  "country": null,
+  "access": ["clearnet"],
+  "kyc": true,
+  "tags": ["placeholder", "fictional"],
+  "links": {
+    "clearnet": "https://example.invalid",
+    "onion": null,
+    "i2p": null
+  },
+  "description": "Fictional placeholder. Not a real service. Exists only so the UI can render the scam status. The example.invalid domain is reserved and never resolves."
+}

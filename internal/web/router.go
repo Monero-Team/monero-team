@@ -4,20 +4,30 @@
 package web
 
 import (
+	"log"
 	"net/http"
 
+	"github.com/Monero-Team/monero-team/data"
 	cstrings "github.com/Monero-Team/monero-team/internal/content/strings"
+	"github.com/Monero-Team/monero-team/internal/directory"
 )
 
-// NewHandler parses the embedded templates and returns the application's root
-// http.Handler with privacy/security middleware applied to every route. It
-// returns an error if templates fail to compile, so callers can fail fast at
-// startup.
+// NewHandler parses the embedded templates, loads and validates the embedded
+// directory dataset, and returns the application's root http.Handler with
+// privacy/security middleware applied to every route. It returns an error if
+// templates fail to compile or the dataset fails validation, so callers can
+// fail fast at startup.
 func NewHandler() (http.Handler, error) {
 	tmpl, err := parseTemplates()
 	if err != nil {
 		return nil, err
 	}
+
+	dir, err := directory.Load(data.Files)
+	if err != nil {
+		return nil, err
+	}
+	log.Printf("directory: loaded %d resources", dir.Len())
 
 	// Build the path → section lookup from the single source of truth so the
 	// router and the templates can never drift out of sync.
@@ -29,7 +39,7 @@ func NewHandler() (http.Handler, error) {
 		sections[s.Path] = s
 	}
 
-	h := &handler{tmpl: tmpl, sections: sections}
+	h := &handler{tmpl: tmpl, sections: sections, dir: dir}
 
 	mux := http.NewServeMux()
 	// Exact-match home; "/{$}" prevents "/" from acting as a catch-all so

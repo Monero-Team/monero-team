@@ -1,0 +1,12 @@
+{
+  "slug": "beta-service",
+  "name": "Beta service",
+  "category": "service",
+  "status": "verified",
+  "country": null,
+  "access": ["tor"],
+  "kyc": false,
+  "tags": ["onion"],
+  "links": { "clearnet": null, "onion": "http://betaplaceholder.onion", "i2p": null },
+  "description": "A fictional tor-only service used as a valid test fixture."
+}
