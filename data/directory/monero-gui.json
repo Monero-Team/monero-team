@@ -1,0 +1,16 @@
+{
+  "slug": "monero-gui",
+  "name": "Monero GUI wallet",
+  "category": "wallet",
+  "status": "admitted",
+  "country": null,
+  "access": ["clearnet"],
+  "kyc": false,
+  "tags": ["official", "desktop"],
+  "links": {
+    "clearnet": "https://www.getmonero.org/downloads/",
+    "onion": null,
+    "i2p": null
+  },
+  "description": "The official desktop wallet from the Monero project, with a full node or remote node option. Non-custodial and requires no identity verification."
+}

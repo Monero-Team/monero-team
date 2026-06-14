@@ -1,0 +1,12 @@
+{
+  "slug": "clearnet-no-link",
+  "name": "Clearnet no link",
+  "category": "service",
+  "status": "admitted",
+  "country": null,
+  "access": ["clearnet", "tor"],
+  "kyc": false,
+  "tags": [],
+  "links": { "clearnet": null, "onion": "http://placeholder.onion", "i2p": null },
+  "description": "Lists clearnet access but provides no clearnet link (tor side is consistent)."
+}

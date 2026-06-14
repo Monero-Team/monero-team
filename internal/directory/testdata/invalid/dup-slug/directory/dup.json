@@ -1,0 +1,12 @@
+{
+  "slug": "dup",
+  "name": "Dup one",
+  "category": "wallet",
+  "status": "admitted",
+  "country": null,
+  "access": ["clearnet"],
+  "kyc": false,
+  "tags": [],
+  "links": { "clearnet": "https://dup-one.example", "onion": null, "i2p": null },
+  "description": "First holder of the slug; valid on its own."
+}

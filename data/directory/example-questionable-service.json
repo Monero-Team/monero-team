@@ -1,0 +1,16 @@
+{
+  "slug": "example-questionable-service",
+  "name": "Example questionable service (placeholder)",
+  "category": "exchange",
+  "status": "questionable",
+  "country": null,
+  "access": ["clearnet"],
+  "kyc": false,
+  "tags": ["placeholder", "fictional"],
+  "links": {
+    "clearnet": "https://questionable.example.invalid",
+    "onion": null,
+    "i2p": null
+  },
+  "description": "Fictional placeholder. Not a real service. Exists only so the UI can render the questionable status. The example.invalid domain is reserved and never resolves."
+}

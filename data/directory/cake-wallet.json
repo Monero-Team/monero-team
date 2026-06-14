@@ -1,0 +1,16 @@
+{
+  "slug": "cake-wallet",
+  "name": "Cake Wallet",
+  "category": "wallet",
+  "status": "admitted",
+  "country": null,
+  "access": ["clearnet"],
+  "kyc": false,
+  "tags": ["mobile", "desktop"],
+  "links": {
+    "clearnet": "https://cakewallet.com",
+    "onion": null,
+    "i2p": null
+  },
+  "description": "An open-source, non-custodial Monero and multi-coin wallet for mobile and desktop. The wallet itself requires no identity verification."
+}
