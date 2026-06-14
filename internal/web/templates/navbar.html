@@ -1,0 +1,16 @@
+{{define "navbar"}}<header class="site-header">
+  <div class="container">
+    <nav class="navbar" aria-label="Primary">
+      <a class="wordmark" href="/">
+        <span class="mark">ⓜ</span>{{.Brand.Name}}
+      </a>
+      <ul class="nav-links">
+        {{range .Nav}}
+        <li>
+          <a href="{{.Path}}"{{if eq $.ActivePath .Path}} aria-current="page"{{end}}>{{.Label}}</a>
+        </li>
+        {{end}}
+      </ul>
+    </nav>
+  </div>
+</header>{{end}}

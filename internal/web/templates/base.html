@@ -1,0 +1,21 @@
+{{define "base"}}<!doctype html>
+<html lang="{{.Locale}}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{block "title" .}}{{.Brand.Name}}{{end}}</title>
+    <meta name="description" content="{{.Meta.Description}}" />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{{.Meta.SkipToMain}}</a>
+    {{template "navbar" .}}
+    <main id="main">
+      <div class="container">
+        {{block "main" .}}{{end}}
+      </div>
+    </main>
+    {{template "footer" .}}
+  </body>
+</html>{{end}}

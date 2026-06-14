@@ -1,0 +1,32 @@
+{{define "footer"}}<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="wordmark"><span class="mark">ⓜ</span>{{.Brand.Name}}</div>
+        <p>{{.Brand.Tagline}}</p>
+        <div class="privacy-badges">
+          <span class="badge">{{.Footer.NoJS}}</span>
+          <span class="badge">{{.Footer.NoCookies}}</span>
+          <span class="badge">{{.Footer.SelfHosted}}</span>
+        </div>
+      </div>
+      <nav class="footer-col" aria-label="Sections">
+        <h2>{{.Footer.Sections}}</h2>
+        <ul>
+          {{range .Nav}}
+          <li><a href="{{.Path}}">{{.Label}}</a></li>
+          {{end}}
+        </ul>
+      </nav>
+      <nav class="footer-col" aria-label="More">
+        <h2>{{.Footer.More}}</h2>
+        <ul>
+          {{range .Utility}}
+          <li><a href="{{.Path}}">{{.Label}}</a></li>
+          {{end}}
+        </ul>
+      </nav>
+    </div>
+    <p class="colophon">{{.Footer.PrivacyNote}}</p>
+  </div>
+</footer>{{end}}

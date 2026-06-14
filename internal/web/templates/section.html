@@ -1,0 +1,13 @@
+{{define "title"}}{{.Section.Label}} — {{.Brand.Name}}{{end}}
+{{define "main"}}
+<div class="page-head">
+  <p class="eyebrow">{{.Brand.Name}}</p>
+  <h1>{{.Section.Label}}</h1>
+  <p>{{.Section.Summary}}</p>
+</div>
+
+<div class="coming-soon">
+  <span class="badge">{{.ComingSoon.Badge}}</span>
+  <p>{{.ComingSoon.Body}}</p>
+</div>
+{{end}}

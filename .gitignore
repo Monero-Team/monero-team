@@ -1,0 +1,19 @@
+# Compiled binaries (default `go build` outputs)
+/server
+/monero-server
+/bin/
+
+# Test & coverage artefacts
+*.test
+*.out
+coverage.*
+
+# Local environment / secrets — never commit
+.env
+.env.*
+
+# Editor / OS noise
+.DS_Store
+.idea/
+.vscode/
+*~

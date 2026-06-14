@@ -1,0 +1,22 @@
+{{define "title"}}{{.Home.Title}} — {{.Brand.Tagline}}{{end}}
+{{define "main"}}
+<section class="hero">
+  <p class="eyebrow">{{.Locale}} · privacy-first</p>
+  <h1>{{.Home.Heading}}</h1>
+  <p class="lede">{{.Home.Lede}}</p>
+</section>
+
+<section aria-labelledby="sections-heading">
+  <h2 id="sections-heading">{{.Home.SectionsLed}}</h2>
+  <ul class="section-grid">
+    {{range .Nav}}
+    <li>
+      <a class="section-card" href="{{.Path}}">
+        <span class="name">{{.Label}}</span>
+        <p class="desc">{{.Summary}}</p>
+      </a>
+    </li>
+    {{end}}
+  </ul>
+</section>
+{{end}}
