@@ -35,7 +35,7 @@
 }
 
 /* ---------- Design tokens ---------- */
-/* Locked design fundament (Этап 0). Mirror of monero-team-design-tokens.md —
+/* Locked design fundament (Этап 0). Mirror of docs/design-tokens.md —
  * do not edit values here; change the source of truth and re-mirror. */
 
 :root {
@@ -119,7 +119,7 @@ body {
   min-height: 100vh;
 }
 
-/* Typo scale — canonical steps only (see monero-team-design-tokens.md). */
+/* Typo scale — canonical steps only (see docs/design-tokens.md). */
 h1,
 h2,
 h3 {
@@ -165,7 +165,7 @@ code,
 kbd,
 samp {
   font-family: var(--font-mono);
-  font-size: 0.9em;
+  font-size: 0.8125rem;
 }
 
 /* ---------- Layout ---------- */
@@ -238,7 +238,7 @@ main {
 
 .nav-links a {
   color: var(--text-muted);
-  font-size: 1rem;
+  font-size: 0.8125rem;
   padding-block: var(--space-2);
   border-bottom: 1.5px solid transparent;
 }
@@ -257,7 +257,7 @@ main {
 }
 .page-head p {
   color: var(--text-muted);
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 
 .eyebrow {

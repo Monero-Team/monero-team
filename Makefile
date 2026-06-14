@@ -24,6 +24,7 @@ fmt-check:
 # Run everything CI runs.
 check: fmt-check vet test
 	./scripts/check-no-external-origins.sh
+	./scripts/check-design-tokens.sh
 
 tidy:
 	go mod tidy
