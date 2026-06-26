@@ -33,12 +33,7 @@ func (h *handler) directory(w http.ResponseWriter, r *http.Request) {
 	sec := h.sections[directoryPath]
 	v := newView(sec.Path)
 	v.Section = sec
-	rows := buildDirectoryRows(h.dir.All())
-	v.Directory = directoryView{
-		Resources: rows,
-		Count:     len(rows),
-		Active:    "directory",
-	}
+	v.Directory = buildDirectoryView(h.dir, r.URL.Query())
 	h.tmpl.render(w, "directory", v)
 }
 

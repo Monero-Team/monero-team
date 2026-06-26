@@ -1,0 +1,82 @@
+{{/* partials/filter-sidebar.html — directory filter panel.
+     Renders as a <form method="GET"> with four filter groups:
+     category · status · kyc · access (strict order, brand-book §6).
+
+     Expects:
+       .Filters.Categories  []FilterOption  {Value, Label, Count, Checked bool}
+       .Filters.Statuses    []FilterOption
+       .Filters.KYC         []FilterOption
+       .Filters.Access      []FilterOption
+       .ClearURL            string  href for "Clear all" (e.g. "/dir")
+       .ApplyAction         string  form action (e.g. "/dir")
+
+     Works fully without JavaScript: native GET form, checkboxes
+     produce repeated query params (category=wallet&status=verified…). */}}
+{{ define "filter-sidebar" }}
+<aside class="filter-sidebar" aria-label="Filter resources">
+  <form class="filter-form" method="GET" action="{{ .ApplyAction }}">
+
+    <details class="fgroup" open>
+      <summary class="fgroup__summary">Category</summary>
+      <div class="fgroup__options">
+        {{ range .Filters.Categories }}
+        <label class="fopt">
+          <input type="checkbox" name="category" value="{{ .Value }}"{{ if .Checked }} checked{{ end }}>
+          <span class="fopt__box" aria-hidden="true"></span>
+          <span class="fopt__label">{{ .Label }}</span>
+          <span class="fopt__count">{{ .Count }}</span>
+        </label>
+        {{ end }}
+      </div>
+    </details>
+
+    <details class="fgroup" open>
+      <summary class="fgroup__summary">Status</summary>
+      <div class="fgroup__options">
+        {{ range .Filters.Statuses }}
+        <label class="fopt">
+          <input type="checkbox" name="status" value="{{ .Value }}"{{ if .Checked }} checked{{ end }}>
+          <span class="fopt__box" aria-hidden="true"></span>
+          <span class="fopt__label">{{ .Label }}</span>
+          <span class="fopt__count">{{ .Count }}</span>
+        </label>
+        {{ end }}
+      </div>
+    </details>
+
+    <details class="fgroup" open>
+      <summary class="fgroup__summary">KYC</summary>
+      <div class="fgroup__options">
+        {{ range .Filters.KYC }}
+        <label class="fopt">
+          <input type="checkbox" name="kyc" value="{{ .Value }}"{{ if .Checked }} checked{{ end }}>
+          <span class="fopt__box" aria-hidden="true"></span>
+          <span class="fopt__label">{{ .Label }}</span>
+          <span class="fopt__count">{{ .Count }}</span>
+        </label>
+        {{ end }}
+      </div>
+    </details>
+
+    <details class="fgroup" open>
+      <summary class="fgroup__summary">Access</summary>
+      <div class="fgroup__options">
+        {{ range .Filters.Access }}
+        <label class="fopt">
+          <input type="checkbox" name="access" value="{{ .Value }}"{{ if .Checked }} checked{{ end }}>
+          <span class="fopt__box" aria-hidden="true"></span>
+          <span class="fopt__label">{{ .Label }}</span>
+          <span class="fopt__count">{{ .Count }}</span>
+        </label>
+        {{ end }}
+      </div>
+    </details>
+
+    <div class="filter-actions">
+      <button class="btn-apply" type="submit">Apply filters</button>
+      <a class="link-clear" href="{{ .ClearURL }}">Clear all</a>
+    </div>
+
+  </form>
+</aside>
+{{ end }}

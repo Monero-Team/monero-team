@@ -1,0 +1,36 @@
+{{/* partials/active-filters.html — removable active-filter pills + result count.
+     Renders above the resource list whenever at least one filter is active.
+
+     Expects:
+       .ActiveFilters  []ActiveFilter  {Label string, RemoveURL string}
+                       Label  e.g. "Category: wallet"
+                       RemoveURL  current URL with this param removed
+       .ResultCount    int   number of resources after filtering
+       .ClearURL       string  href to remove all filters
+
+     Each pill is a plain <a> link — no JS needed to remove a filter. */}}
+{{ define "active-filters" }}
+{{ if .ActiveFilters }}
+<div class="active-filters" aria-label="Active filters">
+  <div class="active-filters__pills">
+    {{ range .ActiveFilters }}
+    <a class="active-pill" href="{{ .RemoveURL }}" aria-label="Remove {{ .Label }} filter">
+      {{ .Label }}
+      <span class="active-pill__remove" aria-hidden="true">×</span>
+    </a>
+    {{ end }}
+  </div>
+  <p class="active-filters__count">{{ .ResultCount }} {{ if eq .ResultCount 1 }}resource{{ else }}resources{{ end }}</p>
+</div>
+{{ end }}
+{{ end }}
+
+{{/* Active-filters empty-match sub-block — include inside the list column
+     when .Resources is empty after filtering. */}}
+{{ define "dir-empty-match" }}
+<div class="dir__empty-match">
+  <p class="dir__empty-match-title">No resources match these filters</p>
+  <p class="dir__empty-match-body">Try removing a filter or two to broaden the results.</p>
+  <a class="dir__empty-match-reset" href="{{ .ClearURL }}">Reset filters</a>
+</div>
+{{ end }}

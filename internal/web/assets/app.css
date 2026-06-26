@@ -630,3 +630,310 @@ main {
     margin-left: 0;
   }
 }
+
+/* ============================================================
+   Directory filters — ported from the Claude Design filters.css.
+   Consumes ONLY existing tokens; defines none. Active state is an
+   accent outline, never a filled plate. Status colours are NOT used
+   here. Dark theme only, no JS.
+   ============================================================ */
+
+/* Two-column layout: sidebar left, list right. On narrow viewports
+   columns stack; sidebar goes on top. */
+.dir__body {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  column-gap: var(--space-8);
+  align-items: start;
+  margin-top: var(--space-8);
+}
+
+/* Filter sidebar */
+.filter-sidebar {
+  position: sticky;
+  top: calc(56px + var(--space-6)); /* clear sticky nav */
+}
+
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* Filter group: each wrapped in <details open> */
+.fgroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+  padding-bottom: var(--space-6);
+}
+.fgroup:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* Summary = group heading */
+.fgroup__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-meta);
+  user-select: none;
+  outline: none;
+}
+.fgroup__summary::-webkit-details-marker {
+  display: none;
+}
+/* Chevron — rotates on open, hidden on desktop */
+.fgroup__summary::after {
+  content: "›";
+  font-size: 0.875rem;
+  color: var(--text-meta);
+  transition: transform 0.15s ease;
+  display: inline-block;
+}
+.fgroup[open] .fgroup__summary::after {
+  transform: rotate(90deg);
+}
+
+/* Options list */
+.fgroup__options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Single checkbox row */
+.fopt {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  cursor: pointer;
+}
+/* Hide the real checkbox; replaced by .fopt__box */
+.fopt input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+/* Custom checkbox — thin, no fill */
+.fopt__box {
+  flex-shrink: 0;
+  position: relative;
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: 3px;
+  background: transparent;
+  transition: border-color 0.15s ease;
+}
+/* Checked: accent border + tiny checkmark */
+.fopt input:checked ~ .fopt__box {
+  border-color: var(--accent);
+}
+.fopt__box::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 1px;
+  left: 4px;
+  width: 4px;
+  height: 7px;
+  border-right: 1.5px solid var(--accent);
+  border-bottom: 1.5px solid var(--accent);
+  transform: rotate(45deg);
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+.fopt input:checked ~ .fopt__box::after {
+  opacity: 1;
+}
+/* Keyboard focus ring on the custom box */
+.fopt input:focus-visible ~ .fopt__box {
+  outline: var(--border-width) solid var(--accent);
+  outline-offset: 3px;
+}
+/* Label text */
+.fopt__label {
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  transition: color 0.15s ease;
+}
+.fopt:hover .fopt__label {
+  color: var(--text);
+}
+.fopt input:checked ~ .fopt__box + .fopt__label {
+  color: var(--text);
+}
+/* Count badge beside label */
+.fopt__count {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-meta);
+}
+
+/* Action buttons */
+.filter-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+}
+.btn-apply {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-4);
+  background: transparent;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-control);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 0.8125rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.btn-apply:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn-apply:focus-visible {
+  outline: var(--border-width) solid var(--accent);
+  outline-offset: 3px;
+}
+.link-clear {
+  display: block;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--text-meta);
+  transition: color 0.15s ease;
+}
+.link-clear:hover {
+  color: var(--text-muted);
+}
+
+/* Content column: active filter pills + count + list */
+.dir__content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Active filters bar — above the list */
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+}
+.active-filters__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  flex: 1 1 auto;
+}
+
+/* Active filter pill — link that removes that filter */
+.active-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-control);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.active-pill:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.active-pill__remove {
+  color: var(--text-meta);
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+/* Result count (mono) pushed to the right side of the bar */
+.active-filters__count {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-meta);
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+/* No-match empty state */
+.dir__empty-match {
+  padding-block: var(--space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.dir__empty-match-title {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 1.25rem;
+  color: var(--text);
+}
+.dir__empty-match-body {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+.dir__empty-match-reset {
+  font-size: 0.8125rem;
+  color: var(--accent);
+  transition: opacity 0.15s ease;
+}
+.dir__empty-match-reset:hover {
+  opacity: 0.78;
+}
+
+/* Desktop: disable summary collapse affordance */
+@media (min-width: 761px) {
+  .fgroup__summary {
+    pointer-events: none;
+    cursor: default;
+  }
+  .fgroup__summary::after {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .dir__body {
+    grid-template-columns: 1fr;
+    margin-top: var(--space-6);
+  }
+  .filter-sidebar {
+    position: static;
+    border-bottom: var(--border-width) solid var(--border);
+    padding-bottom: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+  .btn-apply {
+    padding: var(--space-3) var(--space-4);
+  }
+  .active-filters__count {
+    margin-left: 0;
+  }
+}
