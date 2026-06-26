@@ -9,15 +9,16 @@ seriously and appreciate responsible disclosure.
 
 Report privately through one of:
 
-- GitHub's private vulnerability reporting (Security → Report a vulnerability),
-  if enabled for this repository.
-- Encrypted email to `<SECURITY_CONTACT_EMAIL>` using the PGP key published at
-  `<PGP_KEY_URL_OR_FINGERPRINT>`.
+- **GitHub private vulnerability reporting** (Security → Report a vulnerability) —
+  preferred, and encrypted in transit by GitHub.
+- **Email `mail@monero.team`.** This inbox is hosted on Proton Mail, so messages
+  are stored with zero-access encryption at rest. Note this is not end-to-end
+  encryption unless you send from a Proton account or otherwise encrypt to us, so
+  avoid putting exploit details in the body when a proof of concept can wait —
+  send a brief first contact and we will arrange a secure channel.
 
-> Maintainers: replace the placeholders above before publishing the repository.
-
-Please include: a description of the issue, steps to reproduce, affected
-component or version, and the potential impact.
+Please include: a description of the issue, steps to reproduce, the affected
+component, and the potential impact.
 
 ## What to expect
 
