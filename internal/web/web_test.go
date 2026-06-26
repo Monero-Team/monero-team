@@ -3,6 +3,7 @@ package web
 import (
 	"net/http"
 	"net/http/httptest"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -123,12 +124,19 @@ func TestSecurityHeaders(t *testing.T) {
 	}
 }
 
+// externalLoader matches markup that would make the browser *load* a resource
+// from an external origin. It mirrors scripts/check-no-external-origins.sh:
+// outbound navigation (<a href="https://…">) is allowed — the directory links
+// out by design — but stylesheets, scripts, images, and CSS url()s must be
+// same-origin.
+var externalLoader = regexp.MustCompile(`(?i)(<link[^>]+href="https?://|<script[^>]+src="https?://|<img[^>]+src="https?://|url\(\s*["']?https?://)`)
+
 func TestNoExternalOrigins(t *testing.T) {
 	h := newTestServer(t)
 	for _, path := range allRoutes() {
 		body := get(t, h, path).Body.String()
-		if strings.Contains(body, "://") {
-			t.Errorf("GET %s: rendered HTML references an external origin (found \"://\")", path)
+		if loc := externalLoader.FindString(body); loc != "" {
+			t.Errorf("GET %s: rendered HTML loads an external resource: %q", path, loc)
 		}
 	}
 }

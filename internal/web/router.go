@@ -46,6 +46,12 @@ func NewHandler() (http.Handler, error) {
 	// unknown paths fall through to a 404.
 	mux.HandleFunc("GET /{$}", h.home)
 	for path := range sections {
+		if path == directoryPath {
+			// /dir renders the directory list; every other section is
+			// still the coming-soon skeleton.
+			mux.HandleFunc("GET "+path, h.directory)
+			continue
+		}
 		mux.HandleFunc("GET "+path, h.section)
 	}
 	mux.HandleFunc("GET /healthz", h.healthz)

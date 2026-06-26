@@ -24,6 +24,24 @@ func (h *handler) home(w http.ResponseWriter, r *http.Request) {
 	h.tmpl.render(w, "home", v)
 }
 
+// directoryPath is the canonical path of the directory list section.
+const directoryPath = "/dir"
+
+// directory renders the directory list: one row-card per resource in the
+// store's canonical order (name, slug). Fully server-rendered, no JavaScript.
+func (h *handler) directory(w http.ResponseWriter, r *http.Request) {
+	sec := h.sections[directoryPath]
+	v := newView(sec.Path)
+	v.Section = sec
+	rows := buildDirectoryRows(h.dir.All())
+	v.Directory = directoryView{
+		Resources: rows,
+		Count:     len(rows),
+		Active:    "directory",
+	}
+	h.tmpl.render(w, "directory", v)
+}
+
 // section renders the coming-soon skeleton for whichever top-level or utility
 // section matches the request path. The active navbar item is resolved here,
 // server-side, from the canonical path.

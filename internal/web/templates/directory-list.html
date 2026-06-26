@@ -1,0 +1,23 @@
+{{/* partials/directory-list.html — directory list screen body.
+     Expects:
+       .Resources  []Resource  (see directory-row.html)
+       .Count      int         total shown (mono counter)
+     Renders inside {{ define "main" }} of base.html with .Active "directory".
+     Works fully without JavaScript: rows are links, paging is a link. */}}
+{{ define "directory-list" }}
+<header class="dir__head">
+  <h1 class="dir__title">Resource directory</h1>
+  <p class="dir__count">{{ .Count }} {{ if eq .Count 1 }}resource{{ else }}resources{{ end }}</p>
+</header>
+
+{{ if .Resources }}
+<div class="dir__list">
+  {{ range .Resources }}{{ template "directory-row" . }}{{ end }}
+</div>
+{{ else }}
+<div class="dir__empty">
+  <p class="dir__empty-title">No resources to show</p>
+  <p class="dir__empty-body">Nothing matches yet. When listings are added, they will appear here.</p>
+</div>
+{{ end }}
+{{ end }}

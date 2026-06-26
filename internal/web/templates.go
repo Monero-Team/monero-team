@@ -7,11 +7,13 @@ import (
 	"net/http"
 )
 
-// pages maps a logical page name to its content template file. Each content
-// file defines the "title" and "main" blocks consumed by base.html.
-var pages = map[string]string{
-	"home":    "templates/home.html",
-	"section": "templates/section.html",
+// pages maps a logical page name to the content template file(s) it needs. The
+// first file defines the "title" and "main" blocks consumed by base.html; any
+// further files supply page-specific partials.
+var pages = map[string][]string{
+	"home":      {"templates/home.html"},
+	"section":   {"templates/section.html"},
+	"directory": {"templates/directory.html", "templates/directory-list.html", "templates/directory-row.html"},
 }
 
 // templateSet holds one fully-parsed template per page. Because every page
@@ -32,7 +34,7 @@ var shared = []string{
 func parseTemplates() (templateSet, error) {
 	set := make(templateSet, len(pages))
 	for name, content := range pages {
-		files := append(append([]string{}, shared...), content)
+		files := append(append([]string{}, shared...), content...)
 		tmpl, err := template.New("base").ParseFS(templatesFS, files...)
 		if err != nil {
 			return nil, fmt.Errorf("parse %s: %w", name, err)
