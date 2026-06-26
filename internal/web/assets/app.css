@@ -391,3 +391,242 @@ main {
   color: var(--text-meta);
   font-size: 0.8125rem;
 }
+
+/* ============================================================
+   Directory list screen — ported from the Claude Design
+   directory.css. Consumes ONLY existing tokens; defines none.
+   Status colours (--status-*) appear ONLY on .status--* and
+   .status-warn. Dark theme only, no JS.
+   ============================================================ */
+
+/* Page head: H1 + mono resource counter */
+.dir__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding-bottom: var(--space-8);
+  border-bottom: var(--border-width) solid var(--border);
+}
+.dir__title {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 2rem;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--text);
+}
+.dir__count {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-meta);
+}
+
+/* The list: rows separated by 0.5px borders, generous air */
+.dir__list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ROW CARD (horizontal) — partials/directory-row.html */
+.dirrow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: var(--space-8);
+  align-items: start;
+  padding-block: var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+}
+.dirrow:first-child {
+  border-top: var(--border-width) solid var(--border);
+}
+
+/* Status-driven row states */
+.dirrow--questionable {
+  opacity: 0.55;
+}
+.dirrow--scam {
+  opacity: 0.5;
+}
+
+/* Left column = the substance of the row */
+.dirrow__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+/* Head line: status (first) · name · country */
+.dirrow__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+/* Status label — the ONLY place status colours appear. mono, sentence case */
+.status {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.status--verified {
+  color: var(--status-verified);
+}
+.status--admitted {
+  color: var(--status-admitted);
+}
+.status--questionable {
+  color: var(--status-questionable);
+}
+.status--scam {
+  color: var(--status-scam);
+}
+
+/* Explicit warning label next to a scam status — row stays in the list */
+.status-warn {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--status-scam);
+  white-space: nowrap;
+}
+
+/* Resource name — the primary element of the row */
+.dirrow__name {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 1.25rem;
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+  color: var(--text);
+  margin: 0;
+}
+.dirrow__name a {
+  color: inherit;
+  transition: color 0.15s ease;
+}
+.dirrow__name a:hover {
+  color: var(--accent);
+}
+
+/* Country — 2-letter mono code, never a flag emoji */
+.country {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--text-meta);
+}
+
+/* Description */
+.dirrow__desc {
+  max-width: 64ch;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Restrained mono indicators: KYC + access */
+.dirrow__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-meta);
+}
+.dirrow__meta .sep {
+  color: var(--border-strong);
+  user-select: none;
+}
+
+/* Bottom of the row: thin pill tags + accent Open link */
+.dirrow__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: var(--text-muted);
+  padding: 2px var(--space-2);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-control);
+  transition: border-color 0.15s ease;
+}
+.tag:hover {
+  border-color: var(--border-strong);
+}
+
+.open-link {
+  margin-left: auto;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 0.8125rem;
+  color: var(--accent);
+  transition: opacity 0.15s ease;
+}
+.open-link:hover {
+  opacity: 0.78;
+}
+
+/* Right column = rating slot (muted placeholder, no stars) */
+.dirrow__aside {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 2px;
+}
+.rating {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--text-meta);
+  white-space: nowrap;
+}
+
+/* Empty state — calm, typographic */
+.dir__empty {
+  padding-block: var(--space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.dir__empty-title {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 1.25rem;
+  color: var(--text);
+}
+.dir__empty-body {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+/* Responsive — rating slot drops under the name on narrow widths */
+@media (max-width: 760px) {
+  .dirrow {
+    grid-template-columns: 1fr;
+    row-gap: var(--space-3);
+  }
+  .dirrow__aside {
+    justify-content: flex-start;
+    padding-top: 0;
+  }
+  .open-link {
+    margin-left: 0;
+  }
+}

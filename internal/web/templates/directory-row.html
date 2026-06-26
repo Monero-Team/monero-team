@@ -1,0 +1,40 @@
+{{/* partials/directory-row.html — one horizontal directory row.
+     Expects a resource value with fields:
+       .Status      "verified" | "admitted" | "questionable" | "scam"
+       .StatusLabel "Verified" | "Admitted" | "Questionable" | "Scam"  (sentence case)
+       .Name .URL .Slug
+       .Country     2-letter code, or "" when unknown
+       .Desc
+       .KYC         "No KYC" | "KYC required"
+       .Access      e.g. "clearnet · tor · i2p"
+       .Tags        []string
+       .Rated       bool   (false -> "not rated"; no stars yet)
+     Status colours live ONLY on the .status label. External links carry
+     rel="noopener noreferrer". */}}
+{{ define "directory-row" }}
+<article class="dirrow{{ if eq .Status "questionable" }} dirrow--questionable{{ else if eq .Status "scam" }} dirrow--scam{{ end }}">
+  <div class="dirrow__main">
+    <div class="dirrow__head">
+      <span class="status status--{{ .Status }}">{{ .StatusLabel }}</span>
+      {{ if eq .Status "scam" }}<span class="status-warn">Reported — do not use</span>{{ end }}
+      <h2 class="dirrow__name"><a href="{{ .URL }}" rel="noopener noreferrer">{{ .Name }}</a></h2>
+      {{ if .Country }}<span class="country">{{ .Country }}</span>{{ end }}
+    </div>
+    <p class="dirrow__desc">{{ .Desc }}</p>
+    <div class="dirrow__meta">
+      <span>{{ .KYC }}</span>
+      <span class="sep" aria-hidden="true">·</span>
+      <span>{{ .Access }}</span>
+    </div>
+    <div class="dirrow__foot">
+      <div class="tags">
+        {{ range .Tags }}<span class="tag">{{ . }}</span>{{ end }}
+      </div>
+      <a class="open-link" href="{{ .URL }}" rel="noopener noreferrer">Open</a>
+    </div>
+  </div>
+  <div class="dirrow__aside">
+    <span class="rating">{{ if .Rated }}{{ .RatingText }}{{ else }}not rated{{ end }}</span>
+  </div>
+</article>
+{{ end }}
