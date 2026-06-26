@@ -25,11 +25,20 @@ type directoryRow struct {
 	RatingText  string // "" for now
 }
 
-// directoryView is the page model passed to the directory-list partial.
+// directoryView is the page model passed to the directory page and its
+// partials (directory-list, filter-sidebar, active-filters, dir-empty-match).
 type directoryView struct {
 	Resources []directoryRow
 	Count     int
 	Active    string
+
+	// Filtering (Stage 4).
+	Filters       Filters
+	ActiveFilters []ActiveFilter
+	ClearURL      string
+	ApplyAction   string
+	ResultCount   int
+	Filtered      bool // true when at least one filter is active
 }
 
 // buildDirectoryRows maps the store's resources (already sorted by name, slug)
