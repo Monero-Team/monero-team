@@ -1206,3 +1206,55 @@ main {
     gap: var(--space-8);
   }
 }
+
+/* ============================================================
+   Directory search box (Stage 6). Tokens only; no shadows or
+   gradients; borders are 0.5px (--border-width). Focus is an
+   accent border/outline. Sits atop .dir__content.
+   ============================================================ */
+.dir-search {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  margin-bottom: var(--space-6);
+}
+.dir-search__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-control);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  transition: border-color 0.15s ease;
+}
+.dir-search__input::placeholder {
+  color: var(--text-meta);
+}
+.dir-search__input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+}
+.dir-search__submit {
+  flex: 0 0 auto;
+  padding: var(--space-2) var(--space-4);
+  background: transparent;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-control);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.dir-search__submit:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.dir-search__submit:focus-visible {
+  outline: var(--border-width) solid var(--accent);
+  outline-offset: 3px;
+}

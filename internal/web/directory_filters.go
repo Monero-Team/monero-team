@@ -3,9 +3,71 @@ package web
 import (
 	"net/url"
 	"sort"
+	"strings"
 
 	"github.com/Monero-Team/monero-team/internal/directory"
 )
+
+// Search limits: an input string longer than maxQueryLen is truncated, and at
+// most maxTerms whitespace-separated terms are used for matching.
+const (
+	maxQueryLen = 64
+	maxTerms    = 8
+)
+
+// HiddenInput is one hidden form field carrying an active facet value, so the
+// search form preserves the current filters on submit.
+type HiddenInput struct {
+	Name  string
+	Value string
+}
+
+// Search is the directory search view model. Field names match dir-search.html.
+type Search struct {
+	Query             string        // sanitized user string, for the input value
+	FacetHiddenInputs []HiddenInput // active facet values, one hidden input each
+}
+
+// searchSpec holds the normalized text query: the (trimmed, length-capped)
+// string the user sees, plus the lowercased substring terms used for matching.
+type searchSpec struct {
+	raw   string
+	terms []string
+}
+
+// parseSearch normalizes q: trim, cap length, lowercase, split into ≤maxTerms
+// literal substring terms. An empty/whitespace q yields no text filter.
+func parseSearch(q url.Values) searchSpec {
+	raw := strings.TrimSpace(q.Get("q"))
+	if raw == "" {
+		return searchSpec{}
+	}
+	if r := []rune(raw); len(r) > maxQueryLen {
+		raw = string(r[:maxQueryLen])
+	}
+	terms := strings.Fields(strings.ToLower(raw))
+	if len(terms) > maxTerms {
+		terms = terms[:maxTerms]
+	}
+	return searchSpec{raw: raw, terms: terms}
+}
+
+func (s searchSpec) active() bool { return len(s.terms) > 0 }
+
+// match reports whether every term is a substring of the resource's haystack
+// (name + description + tags + category, lowercased).
+func (s searchSpec) match(r *directory.Resource) bool {
+	if len(s.terms) == 0 {
+		return true
+	}
+	hay := strings.ToLower(r.Name + " " + r.Description + " " + strings.Join(r.Tags, " ") + " " + r.Category)
+	for _, t := range s.terms {
+		if !strings.Contains(hay, t) {
+			return false
+		}
+	}
+	return true
+}
 
 // FilterOption is one selectable checkbox in a filter group. Field names match
 // the filter-sidebar partial exactly.
@@ -182,11 +244,13 @@ func buildDirectoryView(store *directory.Store, q url.Values) directoryView {
 	all := store.All()
 	categories := store.Categories() // present categories, sorted
 	sel := parseSelection(q, setOf(categories))
+	search := parseSearch(q)
 
-	// Filter (store order is already canonical: name, slug).
+	// Filter (store order is already canonical: name, slug). Text and facets
+	// compose with AND.
 	filtered := make([]*directory.Resource, 0, len(all))
 	for _, r := range all {
-		if sel.match(r) {
+		if sel.match(r) && search.match(r) {
 			filtered = append(filtered, r)
 		}
 	}
@@ -240,10 +304,27 @@ func buildDirectoryView(store *directory.Store, q url.Values) directoryView {
 		})
 	}
 
-	// Active-filter pills, in dimension order, each with a remove URL built
-	// from the sanitized selection.
-	canonical := sel.values(categories)
+	// Facet-only values (no q) → hidden inputs so the search form preserves
+	// the current filters on submit.
+	facetValues := sel.values(categories)
+	var hidden []HiddenInput
+	for _, k := range sortedKeys(facetValues) {
+		for _, v := range facetValues[k] {
+			hidden = append(hidden, HiddenInput{Name: k, Value: v})
+		}
+	}
+
+	// canonical = the full current state (facets + q). Every facet pill's
+	// remove URL is built from it, so removing a facet keeps q; the search
+	// pill's remove URL drops q but keeps the facets.
+	canonical := stateValues(sel, search, categories)
 	var active []ActiveFilter
+	if search.active() {
+		active = append(active, ActiveFilter{
+			Label:     "Search: " + search.raw,
+			RemoveURL: removeURL(canonical, "q", search.raw),
+		})
+	}
 	addActive := func(dim, key string, vals []string, selected map[string]bool) {
 		for _, v := range vals {
 			if selected[v] {
@@ -267,9 +348,31 @@ func buildDirectoryView(store *directory.Store, q url.Values) directoryView {
 		Active:        "directory",
 		Filters:       filters,
 		ActiveFilters: active,
+		Search:        Search{Query: search.raw, FacetHiddenInputs: hidden},
 		ClearURL:      directoryPath,
 		ApplyAction:   directoryPath,
 		ResultCount:   len(rows),
-		Filtered:      sel.active(),
+		Filtered:      sel.active() || search.active(),
 	}
+}
+
+// stateValues is the full current query state: facet selection plus the active
+// search term (if any), used as the base for building remove URLs.
+func stateValues(sel selection, search searchSpec, categories []string) url.Values {
+	q := sel.values(categories)
+	if search.active() {
+		q.Set("q", search.raw)
+	}
+	return q
+}
+
+// sortedKeys returns the keys of a url.Values in sorted order for deterministic
+// hidden-input rendering.
+func sortedKeys(v url.Values) []string {
+	keys := make([]string, 0, len(v))
+	for k := range v {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
 }

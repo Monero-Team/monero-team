@@ -32,13 +32,14 @@ type directoryView struct {
 	Count     int
 	Active    string
 
-	// Filtering (Stage 4).
+	// Filtering (Stage 4) and search (Stage 6).
 	Filters       Filters
 	ActiveFilters []ActiveFilter
+	Search        Search
 	ClearURL      string
 	ApplyAction   string
 	ResultCount   int
-	Filtered      bool // true when at least one filter is active
+	Filtered      bool // true when any filter or the search query is active
 }
 
 // buildDirectoryRows maps the store's resources (already sorted by name, slug)

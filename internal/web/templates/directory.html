@@ -3,6 +3,7 @@
 <div class="dir__body">
   {{template "filter-sidebar" .Directory}}
   <div class="dir__content">
+    {{template "dir-search" .Directory}}
     {{template "active-filters" .Directory}}
     {{if and .Directory.Filtered (not .Directory.Resources)}}
     {{template "dir-empty-match" .Directory}}
