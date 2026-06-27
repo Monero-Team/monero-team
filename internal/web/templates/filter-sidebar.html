@@ -15,6 +15,7 @@
 {{ define "filter-sidebar" }}
 <aside class="filter-sidebar" aria-label="Filter resources">
   <form class="filter-form" method="GET" action="{{ .ApplyAction }}">
+    <input type="hidden" name="q" value="{{ .Search.Query }}">
 
     <details class="fgroup" open>
       <summary class="fgroup__summary">Category</summary>

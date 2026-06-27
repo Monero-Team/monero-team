@@ -13,7 +13,7 @@ import (
 var pages = map[string][]string{
 	"home":      {"templates/home.html"},
 	"section":   {"templates/section.html"},
-	"directory": {"templates/directory.html", "templates/directory-list.html", "templates/directory-row.html", "templates/filter-sidebar.html", "templates/active-filters.html"},
+	"directory": {"templates/directory.html", "templates/directory-list.html", "templates/directory-row.html", "templates/filter-sidebar.html", "templates/active-filters.html", "templates/dir-search.html"},
 	"resource":  {"templates/resource.html", "templates/resource-detail.html"},
 	"not-found": {"templates/not-found.html"},
 }

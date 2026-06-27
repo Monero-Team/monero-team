@@ -1,0 +1,18 @@
+{{/* templates/dir-search.html — directory search box.
+     A native GET form posting to /dir. The text query is "q"; active facet
+     selections ride along as hidden inputs so searching preserves filters.
+     Works fully without JavaScript. q is rendered only as the input value
+     (auto-escaped) — no match highlighting. */}}
+{{ define "dir-search" }}
+<form class="dir-search" method="GET" action="/dir" role="search">
+  <input
+    class="dir-search__input"
+    type="search"
+    name="q"
+    value="{{ .Search.Query }}"
+    placeholder="Search by name, tag, or category"
+    aria-label="Search the directory">
+  {{ range .Search.FacetHiddenInputs }}<input type="hidden" name="{{ .Name }}" value="{{ .Value }}">{{ end }}
+  <button class="dir-search__submit" type="submit">Search</button>
+</form>
+{{ end }}
