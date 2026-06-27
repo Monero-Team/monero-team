@@ -1,0 +1,87 @@
+{{/* partials/resource-detail.html — single resource detail page.
+     Expects a .Resource value:
+       .Name        string
+       .Status      "verified" | "admitted" | "questionable" | "scam"
+       .StatusLabel string  (sentence case, e.g. "Verified")
+       .Category    string  (sentence case)
+       .SubCategory string  (optional, e.g. "Desktop")
+       .Country     string  2-letter code, or ""
+       .Desc        string  full description prose
+       .KYC         "No KYC" | "KYC required"
+       .Access      string  e.g. "clearnet · tor · i2p"
+       .Links       []ResourceLink  {Label, URL string}
+                    Label: "Clearnet" | "Tor (.onion)" | "I2P" | …
+       .Tags        []string
+     Status modifiers:
+       questionable → resource--questionable (body opacity)
+       scam         → resource--scam (body opacity) + res-warn in header
+     Status colours appear ONLY on the status badge. External links carry
+     rel="noopener noreferrer". */}}
+{{ define "resource-detail" }}
+<a class="back-link" href="/dir">← Directory</a>
+
+<article class="resource{{ if eq .Resource.Status "questionable" }} resource--questionable{{ else if eq .Resource.Status "scam" }} resource--scam{{ end }}">
+
+  <header class="resource__head">
+    <div class="resource__status-line">
+      <span class="res-status res-status--{{ .Resource.Status }}">{{ .Resource.StatusLabel }}</span>
+      {{ if eq .Resource.Status "scam" }}<span class="res-warn">Reported — do not use</span>{{ end }}
+    </div>
+
+    <h1 class="resource__title">{{ .Resource.Name }}</h1>
+
+    <div class="resource__taxo">
+      <span>{{ .Resource.Category }}</span>
+      {{ if .Resource.SubCategory }}
+      <span class="resource__taxo-sep" aria-hidden="true">·</span>
+      <span>{{ .Resource.SubCategory }}</span>
+      {{ end }}
+      {{ if .Resource.Country }}
+      <span class="resource__taxo-sep" aria-hidden="true">·</span>
+      <span>{{ .Resource.Country }}</span>
+      {{ end }}
+    </div>
+
+    {{ if eq .Resource.Status "questionable" }}
+    <p class="res-caution">Unclear ownership — proceed with caution</p>
+    {{ end }}
+  </header>
+
+  <div class="resource__body">
+
+    <section class="resource__section" aria-label="About">
+      <h2 class="resource__section-title">About</h2>
+      <p class="resource__desc">{{ .Resource.Desc }}</p>
+      <div class="resource__indicators">
+        <span>{{ .Resource.KYC }}</span>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>{{ .Resource.Access }}</span>
+      </div>
+    </section>
+
+    {{ if .Resource.Links }}
+    <section class="resource__section" aria-label="Links">
+      <h2 class="resource__section-title">Links</h2>
+      <div class="resource__links">
+        {{ range .Resource.Links }}
+        <div class="link-row">
+          <span class="link-row__label">{{ .Label }}</span>
+          <a class="link-row__addr" href="{{ .URL }}" rel="noopener noreferrer">{{ .URL }}</a>
+        </div>
+        {{ end }}
+      </div>
+    </section>
+    {{ end }}
+
+    {{ if .Resource.Tags }}
+    <section class="resource__section" aria-label="Tags">
+      <h2 class="resource__section-title">Tags</h2>
+      <div class="resource__tags">
+        {{ range .Resource.Tags }}<span class="tag">{{ . }}</span>{{ end }}
+      </div>
+    </section>
+    {{ end }}
+
+  </div>
+</article>
+{{ end }}

@@ -54,8 +54,15 @@ func NewHandler() (http.Handler, error) {
 		}
 		mux.HandleFunc("GET "+path, h.section)
 	}
+	// Resource detail pages. "/dir/{$}" (bare "/dir/") redirects to the list;
+	// "/dir/{slug}" renders one resource or the styled 404.
+	mux.HandleFunc("GET /dir/{$}", h.dirIndexRedirect)
+	mux.HandleFunc("GET /dir/{slug}", h.resource)
 	mux.HandleFunc("GET /healthz", h.healthz)
 	mux.Handle("GET /static/", h.assets())
+	// Catch-all for any other GET path → reusable styled 404. The more
+	// specific "GET /{$}" above still serves the home page for exactly "/".
+	mux.HandleFunc("GET /", h.notFound)
 
 	return securityHeaders(mux), nil
 }

@@ -17,7 +17,7 @@
     <div class="dirrow__head">
       <span class="status status--{{ .Status }}">{{ .StatusLabel }}</span>
       {{ if eq .Status "scam" }}<span class="status-warn">Reported — do not use</span>{{ end }}
-      <h2 class="dirrow__name"><a href="{{ .URL }}" rel="noopener noreferrer">{{ .Name }}</a></h2>
+      <h2 class="dirrow__name"><a href="/dir/{{ .Slug }}">{{ .Name }}</a></h2>
       {{ if .Country }}<span class="country">{{ .Country }}</span>{{ end }}
     </div>
     <p class="dirrow__desc">{{ .Desc }}</p>

@@ -937,3 +937,272 @@ main {
     margin-left: 0;
   }
 }
+
+/* ============================================================
+   Resource detail page + 404 — ported from the Claude Design
+   resource.css. Consumes ONLY existing tokens; defines none.
+   Status colours appear ONLY on .res-status--*, .res-warn, and
+   .res-caution. Single-column editorial layout, no JS.
+   ============================================================ */
+
+/* Back link — plain text, no decoration */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-meta);
+  margin-bottom: var(--space-8);
+  transition: color 0.15s ease;
+}
+.back-link:hover {
+  color: var(--text-muted);
+}
+
+/* Editorial single-column body */
+.resource {
+  max-width: 72ch;
+}
+
+/* Header */
+.resource__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-bottom: var(--space-8);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+/* Status line: status badge first + optional scam warning */
+.resource__status-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Status badge — ONLY place status colours appear */
+.res-status {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-meta); /* default, overridden per state */
+}
+.res-status--verified {
+  color: var(--status-verified);
+}
+.res-status--admitted {
+  color: var(--status-admitted);
+}
+.res-status--questionable {
+  color: var(--status-questionable);
+}
+.res-status--scam {
+  color: var(--status-scam);
+}
+
+/* Scam: explicit warning label in the header */
+.res-warn {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--status-scam);
+}
+
+/* H1 — hero, editorial */
+.resource__title {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+/* Category + country row */
+.resource__taxo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-meta);
+}
+.resource__taxo-sep {
+  color: var(--border-strong);
+  user-select: none;
+}
+
+/* Questionable: subdued caution note below taxonomy */
+.res-caution {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--status-questionable);
+}
+
+/* Body sections */
+.resource__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding-top: var(--space-8);
+}
+.resource__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.resource__section-title {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-meta);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+/* Full description — editorial prose */
+.resource__desc {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+
+/* Inline mono indicators: KYC + access */
+.resource__indicators {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-meta);
+}
+.resource__indicators .sep {
+  color: var(--border-strong);
+  user-select: none;
+}
+
+/* Links block */
+.resource__links {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.link-row {
+  display: grid;
+  grid-template-columns: 10ch 1fr;
+  column-gap: var(--space-6);
+  align-items: baseline;
+  padding-block: var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+}
+.link-row:first-child {
+  border-top: var(--border-width) solid var(--border);
+}
+.link-row__label {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-meta);
+  white-space: nowrap;
+}
+/* Accent mono address — long onion/i2p addresses break safely */
+.link-row__addr {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--accent);
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  transition: opacity 0.15s ease;
+}
+.link-row__addr:hover {
+  opacity: 0.78;
+}
+
+/* Tags */
+.resource__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.resource__tags .tag {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: var(--text-muted);
+  padding: 2px var(--space-2);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-control);
+}
+
+/* Questionable state — whole resource body dimmed */
+.resource--questionable .resource__desc,
+.resource--questionable .resource__indicators,
+.resource--questionable .resource__links,
+.resource--questionable .resource__tags {
+  opacity: 0.65;
+}
+
+/* Scam state — whole resource body strongly dimmed */
+.resource--scam .resource__desc,
+.resource--scam .resource__indicators,
+.resource--scam .resource__links,
+.resource--scam .resource__tags {
+  opacity: 0.45;
+}
+
+/* 404 not found */
+.notfound {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-block: var(--space-16);
+  max-width: 56ch;
+}
+.notfound__code {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-meta);
+}
+.notfound__title {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 2rem;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--text);
+}
+.notfound__body {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+.notfound__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-meta);
+  transition: color 0.15s ease;
+}
+.notfound__back:hover {
+  color: var(--text-muted);
+}
+
+@media (max-width: 760px) {
+  .resource__title {
+    font-size: 1.75rem;
+  }
+  .link-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+    padding-block: var(--space-4);
+  }
+  .resource__body {
+    gap: var(--space-8);
+  }
+}
