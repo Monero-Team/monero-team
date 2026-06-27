@@ -89,8 +89,12 @@ func (h *handler) assets() http.Handler {
 		if ct := assetExtTypes[ext(clean)]; ct != "" {
 			w.Header().Set("Content-Type", ct)
 		}
-		// Assets are content-addressable enough for a long cache during Phase 1;
-		// they are immutable for a given binary build.
+		// Aggressive immutable caching is correct because asset URLs are
+		// content-versioned: app.css is referenced as "/static/app.css?v=<hash>"
+		// (see assetURL), so changing its bytes changes the URL and bypasses any
+		// cached copy. Fonts are referenced unversioned but never change, so the
+		// same header is safe for them. The query string is ignored here — the
+		// current file is always served, so stale "?v=" values are harmless.
 		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 		fileServer.ServeHTTP(w, r)
 	}))

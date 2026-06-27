@@ -28,6 +28,13 @@ var shared = []string{
 	"templates/footer.html",
 }
 
+// templateFuncs are the helpers available to every template. "asset" maps a
+// logical asset name to its cache-busting URL so templates never hard-code the
+// versioned path.
+var templateFuncs = template.FuncMap{
+	"asset": assetURL,
+}
+
 // parseTemplates compiles all page templates from the embedded FS. It returns
 // an error if any template is missing or malformed so the server fails fast at
 // startup rather than at request time.
@@ -35,7 +42,7 @@ func parseTemplates() (templateSet, error) {
 	set := make(templateSet, len(pages))
 	for name, content := range pages {
 		files := append(append([]string{}, shared...), content...)
-		tmpl, err := template.New("base").ParseFS(templatesFS, files...)
+		tmpl, err := template.New("base").Funcs(templateFuncs).ParseFS(templatesFS, files...)
 		if err != nil {
 			return nil, fmt.Errorf("parse %s: %w", name, err)
 		}

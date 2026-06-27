@@ -57,7 +57,8 @@ func TestStaticAssetsReturn200(t *testing.T) {
 		path        string
 		contentType string
 	}{
-		{"/static/app.css", "text/css; charset=utf-8"},
+		// app.css is requested via its cache-busting URL (the form templates emit).
+		{assetURL("app.css"), "text/css; charset=utf-8"},
 		{"/static/fonts/inter-tight-400.woff2", "font/woff2"},
 		{"/static/fonts/jetbrains-mono-500.woff2", "font/woff2"},
 	}
@@ -70,8 +71,8 @@ func TestStaticAssetsReturn200(t *testing.T) {
 		if ct := rec.Header().Get("Content-Type"); ct != a.contentType {
 			t.Errorf("GET %s: Content-Type %q, want %q", a.path, ct, a.contentType)
 		}
-		if cc := rec.Header().Get("Cache-Control"); !strings.Contains(cc, "max-age=") {
-			t.Errorf("GET %s: missing Cache-Control max-age, got %q", a.path, cc)
+		if cc := rec.Header().Get("Cache-Control"); !strings.Contains(cc, "immutable") {
+			t.Errorf("GET %s: Cache-Control not immutable, got %q", a.path, cc)
 		}
 	}
 }

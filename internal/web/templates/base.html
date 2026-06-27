@@ -6,7 +6,7 @@
     <title>{{block "title" .}}{{.Brand.Name}}{{end}}</title>
     <meta name="description" content="{{.Meta.Description}}" />
     <meta name="referrer" content="no-referrer" />
-    <link rel="stylesheet" href="/static/app.css" />
+    <link rel="stylesheet" href="{{ asset "app.css" }}" />
   </head>
   <body>
     <a class="skip-link" href="#main">{{.Meta.SkipToMain}}</a>
