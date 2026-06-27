@@ -1,0 +1,39 @@
+{{/* templates/submit-success.html — calm success screen after a valid submit.
+
+     Nothing is published server-side; the user sends the file themselves, so
+     they keep control of their anonymity.
+
+     Expects a .Submit value with:
+       .Result.JSON      string  the formatted, copy-ready entry JSON
+       .Result.Filename  string  e.g. "data/directory/feather-wallet.json"
+       .Result.Email     string  e.g. "mail@monero.team"
+       .Action           string  to start another submission (e.g. "/submit") */}}
+{{ define "submit-success" }}
+<div class="submit-success">
+  <h1 class="submit-success__title">Submission ready</h1>
+  <p class="submit-success__lede">Your entry is validated and formatted. Nothing has been published — sending it is a manual step you take yourself, so contributing never reveals who you are.</p>
+
+  <section class="submit-success__section" aria-label="Resource JSON">
+    <h2 class="submit-success__h">1. Copy the JSON</h2>
+    <label class="field__label" for="s-json">File contents</label>
+    <textarea class="submit-success__json" id="s-json" rows="18" readonly spellcheck="false">{{ .Result.JSON }}</textarea>
+  </section>
+
+  <section class="submit-success__section" aria-label="File name">
+    <h2 class="submit-success__h">2. Save it as</h2>
+    <p class="submit-success__filename">{{ .Result.Filename }}</p>
+  </section>
+
+  <section class="submit-success__section" aria-label="How to send it">
+    <h2 class="submit-success__h">3. Send it in</h2>
+    <ol class="submit-success__steps">
+      <li>Open a pull request that adds that file to the repository, or</li>
+      <li>email the JSON to <a class="submit-success__mail" href="mailto:{{ .Result.Email }}">{{ .Result.Email }}</a>.</li>
+      <li>For the strongest anonymity, send from a single-use or Proton address, or over Tor.</li>
+    </ol>
+    <p class="submit-success__note">A moderator reviews every submission and assigns its status. Approved entries appear at <code>admitted</code> until independently verified.</p>
+  </section>
+
+  <a class="back-link" href="{{ .Action }}">← Submit another</a>
+</div>
+{{ end }}

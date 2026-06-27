@@ -68,7 +68,7 @@ func Load(fsys fs.FS) (*Store, error) {
 		// Cross-record: globally unique slug.
 		if r.Slug != "" {
 			if prev, ok := slugToFile[r.Slug]; ok {
-				fieldErrs = append(fieldErrs, fmt.Errorf("slug: duplicate slug %q (also defined in %s)", r.Slug, prev))
+				fieldErrs = append(fieldErrs, FieldError{"slug", fmt.Sprintf("duplicate slug %q (also defined in %s)", r.Slug, prev)})
 			} else {
 				slugToFile[r.Slug] = file
 			}
@@ -77,7 +77,7 @@ func Load(fsys fs.FS) (*Store, error) {
 		// Cross-record: no two resources may share a clearnet URL.
 		if c := normalizedClearnet(&r); c != "" {
 			if prev, ok := clearnetToErr[c]; ok {
-				fieldErrs = append(fieldErrs, fmt.Errorf("links.clearnet: duplicate clearnet URL %q (also used by %s)", c, prev))
+				fieldErrs = append(fieldErrs, FieldError{"links.clearnet", fmt.Sprintf("duplicate clearnet URL %q (also used by %s)", c, prev)})
 			} else {
 				clearnetToErr[c] = file
 			}
@@ -97,62 +97,95 @@ func Load(fsys fs.FS) (*Store, error) {
 	return newStore(resources), nil
 }
 
-// validate checks a single resource against every per-record rule and returns
-// all violations as field-prefixed errors (no file prefix; the caller adds it).
-func validate(r *Resource, fileBase string) []error {
-	var errs []error
-	add := func(format string, args ...any) {
-		errs = append(errs, fmt.Errorf(format, args...))
-	}
+// FieldError is a validation problem tied to a specific field. Field uses the
+// resource's path (e.g. "name", "links.clearnet", "access"); the loader
+// prefixes it with the file name, and the /submit form maps it to its inputs.
+type FieldError struct {
+	Field string
+	Msg   string
+}
 
-	// slug: format and equality with the file name.
+func (e FieldError) Error() string { return e.Field + ": " + e.Msg }
+
+// validate checks a single resource against every per-record rule, including
+// the loader-only rules (slug format/file-name equality and the status enum).
+// Returned errors carry no file prefix; the caller adds it.
+func validate(r *Resource, fileBase string) []FieldError {
+	errs := checkCommon(r)
+
+	// slug: format and equality with the file name (loader-only — a submission
+	// has no file yet).
 	switch {
 	case r.Slug == "":
-		add("slug: must not be empty")
+		errs = append(errs, FieldError{"slug", "must not be empty"})
 	default:
 		if !slugRe.MatchString(r.Slug) {
-			add("slug: %q must match ^[a-z0-9]+(-[a-z0-9]+)*$", r.Slug)
+			errs = append(errs, FieldError{"slug", fmt.Sprintf("%q must match ^[a-z0-9]+(-[a-z0-9]+)*$", r.Slug)})
 		}
 		if r.Slug != fileBase {
-			add("slug: %q must equal the file name (%q)", r.Slug, fileBase)
+			errs = append(errs, FieldError{"slug", fmt.Sprintf("%q must equal the file name (%q)", r.Slug, fileBase)})
 		}
+	}
+
+	// status enum (loader-only — a submission's status is assigned by a
+	// moderator, so it is not part of the shared rules).
+	if !validStatus[r.Status] {
+		errs = append(errs, FieldError{"status", fmt.Sprintf("%q is not a valid status", r.Status)})
+	}
+
+	return errs
+}
+
+// ValidateSubmission validates a user-submitted resource using the same rules
+// as the dataset loader, minus the two loader-only rules: the slug/file-name
+// equality (a submission has no file; its slug is generated) and the status
+// enum (status is assigned later by a moderator). It returns field-keyed
+// errors; an empty result means the entry is valid.
+func ValidateSubmission(r *Resource) []FieldError {
+	return checkCommon(r)
+}
+
+// checkCommon runs every per-record rule shared by the loader and the
+// submission path: name, description, category, access, country, links (and
+// access↔links consistency), and tags.
+func checkCommon(r *Resource) []FieldError {
+	var errs []FieldError
+	add := func(field, format string, args ...any) {
+		errs = append(errs, FieldError{field, fmt.Sprintf(format, args...)})
 	}
 
 	// name
 	switch n := utf8.RuneCountInString(r.Name); {
 	case r.Name == "":
-		add("name: must not be empty")
+		add("name", "must not be empty")
 	case n > maxNameLen:
-		add("name: must be at most %d characters (got %d)", maxNameLen, n)
+		add("name", "must be at most %d characters (got %d)", maxNameLen, n)
 	}
 
 	// description
 	switch n := utf8.RuneCountInString(r.Description); {
 	case r.Description == "":
-		add("description: must not be empty")
+		add("description", "must not be empty")
 	case n > maxDescriptionLen:
-		add("description: must be at most %d characters (got %d)", maxDescriptionLen, n)
+		add("description", "must be at most %d characters (got %d)", maxDescriptionLen, n)
 	}
 
-	// category / status enums
+	// category enum
 	if !validCategory[r.Category] {
-		add("category: %q is not a valid category", r.Category)
-	}
-	if !validStatus[r.Status] {
-		add("status: %q is not a valid status", r.Status)
+		add("category", "%q is not a valid category", r.Category)
 	}
 
 	// access: non-empty, valid enum, no duplicates
 	if len(r.Access) == 0 {
-		add("access: must list at least one access type")
+		add("access", "must list at least one access type")
 	} else {
 		seen := make(map[string]bool, len(r.Access))
 		for _, a := range r.Access {
 			if !validAccess[a] {
-				add("access: %q is not a valid access type", a)
+				add("access", "%q is not a valid access type", a)
 			}
 			if seen[a] {
-				add("access: duplicate access type %q", a)
+				add("access", "duplicate access type %q", a)
 			}
 			seen[a] = true
 		}
@@ -160,7 +193,7 @@ func validate(r *Resource, fileBase string) []error {
 
 	// country: null or ISO-3166-1 alpha-2
 	if r.Country != nil && !countryRe.MatchString(*r.Country) {
-		add("country: %q must be a 2-letter ISO-3166-1 alpha-2 code", *r.Country)
+		add("country", "%q must be a 2-letter ISO-3166-1 alpha-2 code", *r.Country)
 	}
 
 	// links: at least one present
@@ -168,18 +201,18 @@ func validate(r *Resource, fileBase string) []error {
 	lnOnion := nonEmpty(r.Links.Onion)
 	lnI2P := nonEmpty(r.Links.I2P)
 	if !lnClear && !lnOnion && !lnI2P {
-		add("links: at least one non-empty link is required")
+		add("links", "at least one non-empty link is required")
 	}
 
 	// link formats
 	if lnClear && !validHTTPURL(*r.Links.Clearnet) {
-		add("links.clearnet: %q must be a valid http(s) URL", *r.Links.Clearnet)
+		add("links.clearnet", "%q must be a valid http(s) URL", *r.Links.Clearnet)
 	}
 	if lnOnion && !strings.HasSuffix(strings.TrimSpace(*r.Links.Onion), ".onion") {
-		add("links.onion: %q must end with .onion", *r.Links.Onion)
+		add("links.onion", "%q must end with .onion", *r.Links.Onion)
 	}
 	if lnI2P && !strings.HasSuffix(strings.TrimSpace(*r.Links.I2P), ".i2p") {
-		add("links.i2p: %q must end with .i2p", *r.Links.I2P)
+		add("links.i2p", "%q must end with .i2p", *r.Links.I2P)
 	}
 
 	// access ↔ links consistency (each access type requires its link, and each
@@ -188,22 +221,22 @@ func validate(r *Resource, fileBase string) []error {
 	accTor := hasAccess(r.Access, AccessTor)
 	accI2P := hasAccess(r.Access, AccessI2P)
 	if accClear && !lnClear {
-		add(`access: lists "clearnet" but links.clearnet is missing`)
+		add("access", `lists "clearnet" but links.clearnet is missing`)
 	}
 	if lnClear && !accClear {
-		add(`links.clearnet: present but access does not list "clearnet"`)
+		add("links.clearnet", `present but access does not list "clearnet"`)
 	}
 	if accTor && !lnOnion {
-		add(`access: lists "tor" but links.onion is missing`)
+		add("access", `lists "tor" but links.onion is missing`)
 	}
 	if lnOnion && !accTor {
-		add(`links.onion: present but access does not list "tor"`)
+		add("links.onion", `present but access does not list "tor"`)
 	}
 	if accI2P && !lnI2P {
-		add(`access: lists "i2p" but links.i2p is missing`)
+		add("access", `lists "i2p" but links.i2p is missing`)
 	}
 	if lnI2P && !accI2P {
-		add(`links.i2p: present but access does not list "i2p"`)
+		add("links.i2p", `present but access does not list "i2p"`)
 	}
 
 	// tags: lowercase, non-empty, de-duplicated
@@ -211,12 +244,12 @@ func validate(r *Resource, fileBase string) []error {
 	for i, t := range r.Tags {
 		switch {
 		case t == "":
-			add("tags[%d]: must not be empty", i)
+			add("tags", "entry %d must not be empty", i)
 		case t != strings.ToLower(t):
-			add("tags[%d]: %q must be lowercase", i, t)
+			add("tags", "%q must be lowercase", t)
 		}
 		if seenTag[t] {
-			add("tags[%d]: duplicate tag %q", i, t)
+			add("tags", "duplicate tag %q", t)
 		}
 		seenTag[t] = true
 	}

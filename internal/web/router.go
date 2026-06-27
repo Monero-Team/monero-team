@@ -58,6 +58,10 @@ func NewHandler() (http.Handler, error) {
 	// "/dir/{slug}" renders one resource or the styled 404.
 	mux.HandleFunc("GET /dir/{$}", h.dirIndexRedirect)
 	mux.HandleFunc("GET /dir/{slug}", h.resource)
+	// Resource submission: show the form, and accept it (validate-only — the
+	// server persists nothing).
+	mux.HandleFunc("GET /submit", h.submitGet)
+	mux.HandleFunc("POST /submit", h.submitPost)
 	mux.HandleFunc("GET /healthz", h.healthz)
 	mux.Handle("GET /static/", h.assets())
 	// Catch-all for any other GET path → reusable styled 404. The more

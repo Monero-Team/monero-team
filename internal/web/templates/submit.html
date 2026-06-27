@@ -1,0 +1,17 @@
+{{/* templates/submit.html — /submit page wrapper.
+     Renders the intake form (with inline errors) or, after a valid POST, the
+     success screen. Drives base.html's "main"/"title" blocks. Expects the page
+     view to expose .Submit (see submit-form.html / submit-success.html). */}}
+{{define "title"}}Submit a resource — {{.Brand.Name}}{{end}}
+{{define "main"}}
+{{ if .Submit.Success }}
+{{ template "submit-success" .Submit }}
+{{ else }}
+<header class="page-head">
+  <h1>Submit a resource</h1>
+  <p>Add a Monero wallet, service, or tool to the directory.</p>
+</header>
+{{ template "submit-intro" .Submit }}
+{{ template "submit-form" .Submit }}
+{{ end }}
+{{end}}
