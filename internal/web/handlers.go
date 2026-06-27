@@ -52,6 +52,31 @@ func (h *handler) section(w http.ResponseWriter, r *http.Request) {
 	h.tmpl.render(w, "section", v)
 }
 
+// resource renders the detail page for /dir/{slug}. An unknown slug yields the
+// styled 404 page with a 404 status.
+func (h *handler) resource(w http.ResponseWriter, r *http.Request) {
+	slug := r.PathValue("slug")
+	res, ok := h.dir.BySlug(slug)
+	if !ok {
+		h.notFound(w, r)
+		return
+	}
+	v := newView(directoryPath) // keep the Directory nav item active
+	v.Resource = buildResourceDetail(res)
+	h.tmpl.render(w, "resource", v)
+}
+
+// dirIndexRedirect sends /dir/ (no slug) back to the canonical list at /dir.
+func (h *handler) dirIndexRedirect(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, directoryPath, http.StatusMovedPermanently)
+}
+
+// notFound renders the reusable styled 404 page with a 404 status.
+func (h *handler) notFound(w http.ResponseWriter, r *http.Request) {
+	v := newView("")
+	h.tmpl.renderStatus(w, "not-found", v, http.StatusNotFound)
+}
+
 // healthz is a dependency-free liveness probe.
 func (h *handler) healthz(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")

@@ -14,6 +14,8 @@ var pages = map[string][]string{
 	"home":      {"templates/home.html"},
 	"section":   {"templates/section.html"},
 	"directory": {"templates/directory.html", "templates/directory-list.html", "templates/directory-row.html", "templates/filter-sidebar.html", "templates/active-filters.html"},
+	"resource":  {"templates/resource.html", "templates/resource-detail.html"},
+	"not-found": {"templates/not-found.html"},
 }
 
 // templateSet holds one fully-parsed template per page. Because every page
@@ -51,10 +53,17 @@ func parseTemplates() (templateSet, error) {
 	return set, nil
 }
 
-// render executes the named page's "base" template against data and writes the
-// result. The page is rendered into a buffer first so that a template error
-// surfaces as a 500 with no partial output, rather than a half-written 200.
+// render executes the named page's "base" template against data with a 200
+// status.
 func (s templateSet) render(w http.ResponseWriter, name string, data any) {
+	s.renderStatus(w, name, data, http.StatusOK)
+}
+
+// renderStatus executes the named page's "base" template against data and
+// writes the result with the given status code. The page is rendered into a
+// buffer first so that a template error surfaces as a 500 with no partial
+// output, rather than a half-written response.
+func (s templateSet) renderStatus(w http.ResponseWriter, name string, data any, code int) {
 	tmpl, ok := s[name]
 	if !ok {
 		http.Error(w, "internal error", http.StatusInternalServerError)
@@ -66,5 +75,6 @@ func (s templateSet) render(w http.ResponseWriter, name string, data any) {
 		return
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(code)
 	_, _ = buf.WriteTo(w)
 }

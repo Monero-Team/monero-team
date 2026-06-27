@@ -1,0 +1,12 @@
+{{/* templates/not-found.html — reusable resource-not-found (404) page.
+     Ported from the Design resource-404 partial. Rendered with a 404 status
+     for unknown /dir/<slug> entries and any other unmatched path. No JS. */}}
+{{define "title"}}Resource not found — {{.Brand.Name}}{{end}}
+{{define "main"}}
+<div class="notfound">
+  <p class="notfound__code">404</p>
+  <h1 class="notfound__title">Resource not found</h1>
+  <p class="notfound__body">The resource you're looking for doesn't exist in the directory, may have been removed, or the URL is incorrect.</p>
+  <a class="notfound__back" href="/dir">← Back to directory</a>
+</div>
+{{end}}

@@ -19,6 +19,7 @@ type view struct {
 	Section    strings.Section
 	ComingSoon strings.ComingSoonText
 	Directory  directoryView
+	Resource   resourceDetail
 }
 
 // newView builds a view with the shared chrome populated. activePath is the
