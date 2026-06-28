@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Example Monero Blog</title>
+    <link>https://example.test/</link>
+    <description>This description must never be stored.</description>
+    <item>
+      <title>Monero 0.18 released</title>
+      <link>https://example.test/0-18</link>
+      <description>Body text we deliberately discard.</description>
+      <pubDate>Mon, 02 Jan 2006 15:04:05 -0700</pubDate>
+    </item>
+    <item>
+      <title>Second post</title>
+      <link>https://example.test/second</link>
+      <pubDate>Tue, 03 Jan 2006 12:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Undated post</title>
+      <link>https://example.test/undated</link>
+    </item>
+  </channel>
+</rss>

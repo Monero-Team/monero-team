@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Example Privacy Feed</title>
+  <link rel="self" href="https://atom.test/feed"/>
+  <entry>
+    <title>Atom headline one</title>
+    <link rel="alternate" type="text/html" href="https://atom.test/one"/>
+    <summary>Summary we discard.</summary>
+    <published>2023-05-01T10:00:00Z</published>
+  </entry>
+  <entry>
+    <title>Atom headline two</title>
+    <link href="https://atom.test/two"/>
+    <updated>2023-05-02T11:30:00Z</updated>
+  </entry>
+</feed>
