@@ -110,8 +110,9 @@ func (h *handler) submitPost(w http.ResponseWriter, r *http.Request) {
 func (h *handler) renderSubmit(w http.ResponseWriter, status int, sv submitView) {
 	v := newView(submitPath)
 	v.Submit = sv
-	w.WriteHeader(status)
-	h.tmpl.render(w, "submit", v)
+	// renderStatus writes the status code exactly once; calling WriteHeader
+	// here as well would trigger a "superfluous WriteHeader" warning.
+	h.tmpl.renderStatus(w, "submit", v, status)
 }
 
 // readSubmitForm extracts and trims the posted fields into sticky form state.

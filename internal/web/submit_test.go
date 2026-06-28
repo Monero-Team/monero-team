@@ -84,6 +84,44 @@ func TestSubmitPostSuccess(t *testing.T) {
 	}
 }
 
+// TestSubmitStatusesAndCleanLog drives the handler through a real server so the
+// net/http "superfluous response.WriteHeader call" warning would surface if the
+// status were written twice. It checks both the success and validation-error
+// statuses and that the server logs nothing.
+func TestSubmitStatusesAndCleanLog(t *testing.T) {
+	h := newTestServer(t)
+
+	var logbuf bytes.Buffer
+	ts := httptest.NewUnstartedServer(h)
+	ts.Config.ErrorLog = log.New(&logbuf, "", 0)
+	ts.Start()
+	defer ts.Close()
+
+	// Success → 200.
+	ok, err := http.PostForm(ts.URL+"/submit", validSubmission())
+	if err != nil {
+		t.Fatalf("POST success: %v", err)
+	}
+	ok.Body.Close()
+	if ok.StatusCode != http.StatusOK {
+		t.Errorf("success status = %d, want 200", ok.StatusCode)
+	}
+
+	// Validation error → 400.
+	bad, err := http.PostForm(ts.URL+"/submit", url.Values{"name": {"X"}})
+	if err != nil {
+		t.Fatalf("POST invalid: %v", err)
+	}
+	bad.Body.Close()
+	if bad.StatusCode != http.StatusBadRequest {
+		t.Errorf("invalid status = %d, want 400", bad.StatusCode)
+	}
+
+	if logbuf.Len() != 0 {
+		t.Errorf("server logged output (superfluous WriteHeader?):\n%s", logbuf.String())
+	}
+}
+
 // TestSubmitJSONIsValidEntry checks the generated JSON parses, carries the
 // pending status, and reflects the normalizations.
 func TestSubmitJSONIsValidEntry(t *testing.T) {
