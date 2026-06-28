@@ -72,12 +72,29 @@ func TestSubmitPostSuccess(t *testing.T) {
 	for _, want := range []string{
 		"Submission ready",
 		"data/directory/acme-wallet.json",
-		"mailto:mail@monero.team",
+		"mailto:submit@monero.team",
+		// "Open in email" link with a correctly URL-encoded subject prefix.
+		`href="mailto:submit@monero.team?subject=Directory%20submission%3A%20`,
+		"Open in email",
 		`&#34;status&#34;: &#34;pending&#34;`, // status pending, HTML-escaped in the textarea
 	} {
 		if !strings.Contains(body, want) {
 			t.Errorf("success screen missing %q", want)
 		}
+	}
+	// The old address must be gone everywhere.
+	if strings.Contains(body, "mail@monero.team") {
+		t.Error("success screen still references the old mail@monero.team address")
+	}
+	// No inline styles, no script, CSP intact, no cookies.
+	if strings.Contains(body, "style=") {
+		t.Error("success screen contains an inline style attribute")
+	}
+	if strings.Contains(strings.ToLower(body), "<script") {
+		t.Error("success screen contains <script>")
+	}
+	if csp := rec.Header().Get("Content-Security-Policy"); !strings.Contains(csp, "script-src 'none'") {
+		t.Errorf("CSP missing script-src 'none': %q", csp)
 	}
 	if len(rec.Result().Cookies()) != 0 {
 		t.Error("POST set cookies")

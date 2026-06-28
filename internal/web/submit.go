@@ -11,7 +11,7 @@ import (
 
 const (
 	submitPath  = "/submit"
-	submitEmail = "mail@monero.team"
+	submitEmail = "submit@monero.team"
 )
 
 // submitLinks holds the three optional link inputs as raw strings.
@@ -39,6 +39,7 @@ type submitResult struct {
 	JSON     string
 	Filename string
 	Email    string
+	Name     string // resource name, used for the mailto subject
 }
 
 // submitView is the page model for /submit (form state or success screen).
@@ -103,6 +104,7 @@ func (h *handler) submitPost(w http.ResponseWriter, r *http.Request) {
 		JSON:     string(out),
 		Filename: "data/directory/" + res.Slug + ".json",
 		Email:    submitEmail,
+		Name:     res.Name,
 	}
 	h.renderSubmit(w, http.StatusOK, sv)
 }

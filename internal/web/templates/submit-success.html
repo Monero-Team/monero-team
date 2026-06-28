@@ -6,7 +6,8 @@
      Expects a .Submit value with:
        .Result.JSON      string  the formatted, copy-ready entry JSON
        .Result.Filename  string  e.g. "data/directory/feather-wallet.json"
-       .Result.Email     string  e.g. "mail@monero.team"
+       .Result.Email     string  e.g. "submit@monero.team"
+       .Result.Name      string  resource name, for the mailto subject
        .Action           string  to start another submission (e.g. "/submit") */}}
 {{ define "submit-success" }}
 <div class="submit-success">
@@ -28,9 +29,13 @@
     <h2 class="submit-success__h">3. Send it in</h2>
     <ol class="submit-success__steps">
       <li>Open a pull request that adds that file to the repository, or</li>
-      <li>email the JSON to <a class="submit-success__mail" href="mailto:{{ .Result.Email }}">{{ .Result.Email }}</a>.</li>
+      <li>email the JSON to <a class="submit-success__mail" href="mailto:{{ .Result.Email }}">{{ .Result.Email }}</a>, pasting the JSON from the field above into the email body.</li>
       <li>For the strongest anonymity, send from a single-use or Proton address, or over Tor.</li>
     </ol>
+    <p class="submit-success__action">
+      <a class="submit-success__open" href="mailto:{{ .Result.Email }}?subject=Directory%20submission%3A%20{{ urlquery .Result.Name }}">Open in email</a>
+    </p>
+    <p class="submit-success__hint">This pre-fills the recipient and subject only. Paste the JSON from the field above into the email body — it is too large to include in the link.</p>
     <p class="submit-success__note">A moderator reviews every submission and assigns its status. Approved entries appear at <code>admitted</code> until independently verified.</p>
   </section>
 
