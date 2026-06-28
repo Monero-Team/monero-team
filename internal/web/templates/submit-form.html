@@ -1,0 +1,150 @@
+{{/* templates/submit-form.html — /submit resource intake.
+
+     Native POST form (no JavaScript). Controls reuse the Stage 4 .fopt
+     checkbox styling; status colours appear ONLY on validation errors.
+
+     Expects a .Submit value:
+       .Action      string                form action (e.g. "/submit")
+       .Categories  []string              category enum, in order
+       .Form        the (re)displayed values:
+         .Name        string
+         .Category    string  (selected enum value, or "")
+         .Country     string  (2-letter code, or "")
+         .Access      map[string]bool  keys "clearnet"/"tor"/"i2p"
+         .KYC         string  "no" | "yes" | ""
+         .Tags        string  (raw comma-separated input)
+         .Links.Clearnet / .Links.Onion / .Links.I2P  string
+         .Description string
+       .Errors      map[string]string     keyed by field name; "" = no error.
+                    Keys: form, name, category, country, access, kyc, tags,
+                    links_clearnet, links_onion, links_i2p, description.
+
+     Status is intentionally absent — a moderator assigns it after review. */}}
+
+{{/* field-error renders an inline error for one field, or nothing. */}}
+{{ define "field-error" }}{{ if . }}<p class="field__error" role="alert">{{ . }}</p>{{ end }}{{ end }}
+
+{{ define "submit-intro" }}
+<div class="submit-intro">
+  <p>Submitting is anonymous. No account, no cookies, no tracking — we never ask who you are.</p>
+  <p>A moderator reviews every entry and assigns its status; you cannot set a status yourself. New entries start at <code>admitted</code> until independently verified.</p>
+  <p>This page builds a ready-to-send file. You send it yourself — from a single-use or Proton address, or over Tor — so contributing never ties the resource to your identity.</p>
+</div>
+{{ end }}
+
+{{ define "submit-form" }}
+<form class="submit-form" method="POST" action="{{ .Action }}">
+  {{ with .Errors.form }}<p class="submit-form__error" role="alert">{{ . }}</p>{{ end }}
+
+  <div class="field{{ if .Errors.name }} field--invalid{{ end }}">
+    <label class="field__label" for="f-name">Name</label>
+    <input class="field__input" type="text" id="f-name" name="name" maxlength="120"
+           value="{{ .Form.Name }}" autocomplete="off" required>
+    {{ template "field-error" .Errors.name }}
+  </div>
+
+  <div class="field{{ if .Errors.category }} field--invalid{{ end }}">
+    <label class="field__label" for="f-category">Category</label>
+    <select class="field__select" id="f-category" name="category" required>
+      <option value="" disabled{{ if not .Form.Category }} selected{{ end }}>Choose a category</option>
+      {{ range $.Categories }}<option value="{{ . }}"{{ if eq . $.Form.Category }} selected{{ end }}>{{ . }}</option>{{ end }}
+    </select>
+    {{ template "field-error" .Errors.category }}
+  </div>
+
+  <div class="field{{ if .Errors.country }} field--invalid{{ end }}">
+    <label class="field__label" for="f-country">Country <span class="field__opt">(optional)</span></label>
+    <input class="field__input field__input--mono" type="text" id="f-country" name="country"
+           maxlength="2" pattern="[A-Za-z]{2}" value="{{ .Form.Country }}"
+           placeholder="ch" autocomplete="off" spellcheck="false">
+    <p class="field__hint">Two-letter ISO 3166-1 code.</p>
+    {{ template "field-error" .Errors.country }}
+  </div>
+
+  <fieldset class="field-group">
+    <legend class="field-group__legend">Access</legend>
+    <div class="field-group__options field-group__options--row">
+      <label class="fopt">
+        <input type="checkbox" name="access" value="clearnet"{{ if .Form.Access.clearnet }} checked{{ end }}>
+        <span class="fopt__box" aria-hidden="true"></span>
+        <span class="fopt__label">Clearnet</span>
+      </label>
+      <label class="fopt">
+        <input type="checkbox" name="access" value="tor"{{ if .Form.Access.tor }} checked{{ end }}>
+        <span class="fopt__box" aria-hidden="true"></span>
+        <span class="fopt__label">Tor</span>
+      </label>
+      <label class="fopt">
+        <input type="checkbox" name="access" value="i2p"{{ if .Form.Access.i2p }} checked{{ end }}>
+        <span class="fopt__box" aria-hidden="true"></span>
+        <span class="fopt__label">I2P</span>
+      </label>
+    </div>
+    {{ template "field-error" .Errors.access }}
+  </fieldset>
+
+  <fieldset class="field-group">
+    <legend class="field-group__legend">KYC</legend>
+    <div class="field-group__options">
+      <label class="fopt">
+        <input type="radio" name="kyc" value="no"{{ if eq .Form.KYC "no" }} checked{{ end }}>
+        <span class="fopt__box fopt__box--radio" aria-hidden="true"></span>
+        <span class="fopt__label">No KYC</span>
+      </label>
+      <label class="fopt">
+        <input type="radio" name="kyc" value="yes"{{ if eq .Form.KYC "yes" }} checked{{ end }}>
+        <span class="fopt__box fopt__box--radio" aria-hidden="true"></span>
+        <span class="fopt__label">KYC required</span>
+      </label>
+    </div>
+    {{ template "field-error" .Errors.kyc }}
+  </fieldset>
+
+  <div class="field{{ if .Errors.tags }} field--invalid{{ end }}">
+    <label class="field__label" for="f-tags">Tags <span class="field__opt">(optional)</span></label>
+    <input class="field__input" type="text" id="f-tags" name="tags" value="{{ .Form.Tags }}"
+           placeholder="open-source, desktop, gui" autocomplete="off">
+    <p class="field__hint">Comma-separated, lowercase.</p>
+    {{ template "field-error" .Errors.tags }}
+  </div>
+
+  <fieldset class="field-group">
+    <legend class="field-group__legend">Links <span class="field__opt">(at least one)</span></legend>
+
+    <div class="field{{ if .Errors.links_clearnet }} field--invalid{{ end }}">
+      <label class="field__label" for="f-clearnet">Clearnet URL</label>
+      <input class="field__input field__input--mono" type="text" id="f-clearnet" name="clearnet"
+             value="{{ .Form.Links.Clearnet }}" placeholder="https://example.org"
+             autocomplete="off" spellcheck="false" inputmode="url">
+      {{ template "field-error" .Errors.links_clearnet }}
+    </div>
+
+    <div class="field{{ if .Errors.links_onion }} field--invalid{{ end }}">
+      <label class="field__label" for="f-onion">Onion address</label>
+      <input class="field__input field__input--mono" type="text" id="f-onion" name="onion"
+             value="{{ .Form.Links.Onion }}" placeholder="http://example.onion"
+             autocomplete="off" spellcheck="false">
+      {{ template "field-error" .Errors.links_onion }}
+    </div>
+
+    <div class="field{{ if .Errors.links_i2p }} field--invalid{{ end }}">
+      <label class="field__label" for="f-i2p">I2P address</label>
+      <input class="field__input field__input--mono" type="text" id="f-i2p" name="i2p"
+             value="{{ .Form.Links.I2P }}" placeholder="http://example.i2p"
+             autocomplete="off" spellcheck="false">
+      {{ template "field-error" .Errors.links_i2p }}
+    </div>
+  </fieldset>
+
+  <div class="field{{ if .Errors.description }} field--invalid{{ end }}">
+    <label class="field__label" for="f-desc">Description</label>
+    <textarea class="field__textarea" id="f-desc" name="description" maxlength="280" rows="4" required>{{ .Form.Description }}</textarea>
+    <p class="field__hint">Up to 280 characters.</p>
+    {{ template "field-error" .Errors.description }}
+  </div>
+
+  <div class="submit-form__actions">
+    <button class="btn-submit" type="submit">Submit resource</button>
+  </div>
+</form>
+{{ end }}

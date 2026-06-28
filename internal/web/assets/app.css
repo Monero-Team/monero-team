@@ -1258,3 +1258,235 @@ main {
   outline: var(--border-width) solid var(--accent);
   outline-offset: 3px;
 }
+
+/* ============================================================
+   Submit a resource (/submit) — native POST form, no JS.
+   Token-only. Checkbox/radio controls reuse the Stage 4 .fopt
+   styling. Status colour (--status-scam) appears ONLY on
+   validation errors. The submit button is the single orange fill.
+   ============================================================ */
+
+/* Intro / explainer panel */
+.submit-intro {
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-panel);
+  padding: var(--space-6);
+  margin-bottom: var(--space-8);
+  color: var(--text-muted);
+}
+.submit-intro p {
+  margin: 0 0 var(--space-3) 0;
+  max-width: 68ch;
+}
+.submit-intro p:last-child {
+  margin-bottom: 0;
+}
+.submit-intro code {
+  font-family: var(--font-mono);
+  color: var(--text);
+}
+
+/* Form column */
+.submit-form {
+  max-width: 40rem;
+}
+
+/* One labelled field */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+.field__label {
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  color: var(--text);
+}
+.field__opt {
+  color: var(--text-meta);
+}
+.field__hint {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-meta);
+}
+
+/* Text inputs, selects, textareas — thin outline, accent focus, no shadow */
+.field__input,
+.field__select,
+.field__textarea {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-control);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+.field__input--mono {
+  font-family: var(--font-mono);
+}
+.field__textarea {
+  resize: vertical;
+  min-height: 5.5rem;
+}
+.field__select {
+  appearance: none;
+  cursor: pointer;
+}
+.field__input::placeholder,
+.field__textarea::placeholder {
+  color: var(--text-meta);
+}
+.field__input:focus-visible,
+.field__select:focus-visible,
+.field__textarea:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Error state — the only place a status colour appears off a status label */
+.field__error,
+.submit-form__error {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--status-scam);
+}
+.submit-form__error {
+  font-size: 0.8125rem;
+  margin-bottom: var(--space-4);
+}
+.field--invalid .field__input,
+.field--invalid .field__select,
+.field--invalid .field__textarea {
+  border-color: var(--status-scam);
+}
+
+/* Grouped controls: access, kyc, links */
+.field-group {
+  border: none;
+  padding: 0;
+  margin: 0 0 var(--space-6) 0;
+}
+.field-group__legend {
+  padding: 0;
+  margin-bottom: var(--space-3);
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  color: var(--text);
+}
+.field-group__options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.field-group__options--row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+/* Radio variant of the .fopt control box: round, filled-dot indicator */
+.fopt__box--radio {
+  border-radius: 999px;
+}
+.fopt__box--radio::after {
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  border: none;
+  border-radius: 999px;
+  background: var(--accent);
+  transform: translate(-50%, -50%);
+}
+
+/* Primary action — the single orange fill on the screen */
+.submit-form__actions {
+  margin-top: var(--space-8);
+}
+.btn-submit {
+  display: inline-block;
+  padding: var(--space-3) var(--space-6);
+  background: var(--accent);
+  color: var(--bg);
+  border: var(--border-width) solid var(--accent);
+  border-radius: var(--radius-control);
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.btn-submit:hover {
+  opacity: 0.9;
+}
+.btn-submit:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ---------- Success screen ---------- */
+.submit-success {
+  max-width: 44rem;
+}
+.submit-success__lede {
+  margin-bottom: var(--space-8);
+  max-width: 68ch;
+  font-size: 1.25rem;
+  color: var(--text-muted);
+}
+.submit-success__section {
+  margin-bottom: var(--space-8);
+}
+.submit-success__h {
+  margin-bottom: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-meta);
+}
+.submit-success__json {
+  width: 100%;
+  padding: var(--space-4);
+  background: var(--surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-card);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+.submit-success__filename {
+  display: inline-block;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-control);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text);
+}
+.submit-success__steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: var(--space-6);
+  color: var(--text-muted);
+}
+.submit-success__mail {
+  color: var(--accent);
+}
+.submit-success__note {
+  margin-top: var(--space-4);
+  font-size: 0.8125rem;
+  color: var(--text-meta);
+}
+.submit-success__note code {
+  font-family: var(--font-mono);
+}
