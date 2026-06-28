@@ -15,6 +15,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Monero-Team/monero-team/internal/news"
 	"github.com/Monero-Team/monero-team/internal/web"
 )
 
@@ -53,6 +54,13 @@ func run() error {
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
+
+	// Start the background news collector. It does not block startup (a cold,
+	// empty cache is expected) and stops gracefully when ctx is cancelled. This
+	// is the only outbound network egress; the request-serving path makes none.
+	newsStore := news.NewStore(0)
+	news.NewScheduler(news.Sources, newsStore, 0).Start(ctx)
+	log.Printf("news: scheduler started (%d sources)", len(news.Sources))
 
 	errCh := make(chan error, 1)
 	go func() {

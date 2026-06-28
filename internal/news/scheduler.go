@@ -65,9 +65,13 @@ func (s *Scheduler) Start(ctx context.Context) {
 	}()
 }
 
-// refreshAll fetches and merges every source once. Failures are recorded per
-// source and never abort the sweep.
+// refreshAll fetches and merges every source once, then logs a one-line
+// summary. Failures are recorded per source (in health) and never abort the
+// sweep; the summary's "M/K" reflects how many sources succeeded. Only counts
+// are logged — never article titles, links, or any content.
 func (s *Scheduler) refreshAll(ctx context.Context) {
+	total := len(s.sources)
+	ok, fetched := 0, 0
 	for _, src := range s.sources {
 		if ctx.Err() != nil {
 			return
@@ -75,17 +79,18 @@ func (s *Scheduler) refreshAll(ctx context.Context) {
 		body, err := s.fetcher.Fetch(ctx, src.FeedURL)
 		if err != nil {
 			s.store.SetError(src.Name, err)
-			s.logf("news: fetch %q failed: %v", src.Name, err)
 			continue
 		}
 		items, err := parseFeed(body, src.Name)
 		if err != nil {
 			s.store.SetError(src.Name, err)
-			s.logf("news: parse %q failed: %v", src.Name, err)
 			continue
 		}
 		s.store.Merge(src.Name, items)
+		ok++
+		fetched += len(items)
 	}
+	s.logf("news: fetched %d items from %d/%d sources", fetched, ok, total)
 }
 
 func (s *Scheduler) logf(format string, args ...any) {
