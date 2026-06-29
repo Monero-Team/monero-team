@@ -141,9 +141,9 @@ func TestDirectoryReplacesComingSoon(t *testing.T) {
 		t.Error("/dir does not render the directory list heading")
 	}
 
-	news := get(t, h, "/news").Body.String()
-	if !strings.Contains(news, "Coming soon") {
-		t.Error("/news should still show the coming-soon skeleton")
+	digest := get(t, h, "/digest").Body.String()
+	if !strings.Contains(digest, "Coming soon") {
+		t.Error("/digest should still show the coming-soon skeleton")
 	}
 }
 

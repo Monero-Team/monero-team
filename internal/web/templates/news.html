@@ -1,0 +1,4 @@
+{{/* templates/news.html — /news page wrapper. Drives base.html's
+     "main"/"title" blocks and delegates the body to the news-feed partial. */}}
+{{define "title"}}News — {{.Brand.Name}}{{end}}
+{{define "main"}}{{template "news-feed" .News}}{{end}}

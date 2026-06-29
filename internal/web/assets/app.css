@@ -1490,3 +1490,150 @@ main {
 .submit-success__note code {
   font-family: var(--font-mono);
 }
+
+/* ============================================================
+   Monero Team — /news feed.
+   Consumes ONLY variables from tokens.css. Defines no new tokens.
+   Loaded after shell.css. Dark theme only. No JS. No images.
+
+   Single-column editorial list. Air separates; borders divide.
+   Lead story is set noticeably larger — same structure, different
+   typographic scale. No excerpts, no thumbnails, no status colours.
+   ============================================================ */
+
+/* ============================================================
+   PAGE HEAD
+   ============================================================ */
+.news__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding-bottom: var(--space-8);
+  border-bottom: var(--border-width) solid var(--border);
+}
+.news__title {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 2rem;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--text);
+}
+
+/* ============================================================
+   FEED LIST
+   ============================================================ */
+.news__feed {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   LEAD STORY — top item, visually dominant
+   ============================================================ */
+.news-lead {
+  padding-block: var(--space-8);
+  border-bottom: var(--border-width) solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 72ch;
+}
+.news-lead__meta {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-meta);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}
+.news-lead__meta .sep {
+  color: var(--border-strong);
+  user-select: none;
+}
+/* Lead headline — H2-scale, editorial weight */
+.news-lead__headline {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--text);
+}
+.news-lead__headline a {
+  color: inherit;
+  transition: color 0.15s ease;
+}
+.news-lead__headline a:hover { color: var(--accent); }
+
+/* ============================================================
+   REGULAR ROW — subsequent items
+   ============================================================ */
+.news-row {
+  padding-block: var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 72ch;
+}
+.news-row__meta {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-meta);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}
+.news-row__meta .sep {
+  color: var(--border-strong);
+  user-select: none;
+}
+/* Row headline — H3-scale, restrained */
+.news-row__headline {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 1.1875rem;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  color: var(--text);
+}
+.news-row__headline a {
+  color: inherit;
+  transition: color 0.15s ease;
+}
+.news-row__headline a:hover { color: var(--accent); }
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+.news__empty {
+  padding-block: var(--space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 56ch;
+}
+.news__empty-title {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 1.25rem;
+  color: var(--text);
+}
+.news__empty-body {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 760px) {
+  .news-lead { padding-block: var(--space-6); }
+  .news-row  { padding-block: var(--space-4); }
+  .news-lead__headline { font-size: 1.375rem; }
+}
