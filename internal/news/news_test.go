@@ -1,10 +1,13 @@
 package news
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -217,6 +220,32 @@ func TestSchedulerRefreshFailSoft(t *testing.T) {
 	}
 	if byName["Down"].LastError == "" {
 		t.Errorf("Down should have recorded a fetch error: %+v", byName["Down"])
+	}
+}
+
+func TestSchedulerSummaryLogsCountsNotContent(t *testing.T) {
+	f := fixtureFetcher{
+		files: map[string]string{"http://feeds/rss": "rss.xml", "http://feeds/atom": "atom.xml"},
+		errs:  map[string]error{"http://feeds/down": fmt.Errorf("refused")},
+	}
+	sources := []Source{
+		{Name: "RSS", FeedURL: "http://feeds/rss"},
+		{Name: "Atom", FeedURL: "http://feeds/atom"},
+		{Name: "Down", FeedURL: "http://feeds/down"},
+	}
+	sch := newScheduler(sources, f, NewStore(0), 0)
+
+	var buf bytes.Buffer
+	sch.logger = log.New(&buf, "", 0)
+	sch.refreshAll(context.Background())
+
+	logs := buf.String()
+	if !strings.Contains(logs, "news: fetched 5 items from 2/3 sources") {
+		t.Errorf("summary line missing/wrong: %q", logs)
+	}
+	// Counts only — never article titles.
+	if strings.Contains(logs, "Monero 0.18 released") || strings.Contains(logs, "Atom headline") {
+		t.Errorf("summary log leaked article content: %q", logs)
 	}
 }
 
