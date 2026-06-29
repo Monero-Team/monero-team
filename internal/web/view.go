@@ -21,6 +21,7 @@ type view struct {
 	Directory  directoryView
 	Resource   resourceDetail
 	Submit     submitView
+	News       newsView
 }
 
 // newView builds a view with the shared chrome populated. activePath is the

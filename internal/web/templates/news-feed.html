@@ -1,0 +1,72 @@
+{{/* partials/news-feed.html — /news page body.
+     Mount inside {{ template "layout" . }} with .Active "news".
+
+     Expects:
+       .Items   []NewsItem   ordered newest-first; first item is the lead
+                NewsItem fields:
+                  .Source    string   e.g. "Monero Observer"
+                  .Date      string   ISO-8601 date, e.g. "2026-06-28"
+                  .DateLabel string   human-readable, e.g. "28 Jun 2026"
+                  .Headline  string
+                  .URL       string   external link
+
+     The first item in .Items is rendered with news-lead.html (larger).
+     All subsequent items are rendered with news-row.html.
+     When .Items is empty, news-empty.html is rendered instead. */}}
+{{ define "news-feed" }}
+<header class="news__head">
+  <h1 class="news__title">News</h1>
+</header>
+
+<div class="news__feed">
+  {{ if .Items }}
+    {{ $lead := index .Items 0 }}
+    {{ template "news-lead" $lead }}
+    {{ range $i, $item := .Items }}
+      {{ if gt $i 0 }}{{ template "news-row" $item }}{{ end }}
+    {{ end }}
+  {{ else }}
+    {{ template "news-empty" . }}
+  {{ end }}
+</div>
+{{ end }}
+
+{{/* ── news-lead.html ─────────────────────────────────────────
+     Most recent item. Visually dominant: H2-scale headline.
+     Dot-accessible as a standalone define for direct use. */}}
+{{ define "news-lead" }}
+<article class="news-lead">
+  <div class="news-lead__meta">
+    <span>{{ .Source }}</span>
+    <span class="sep" aria-hidden="true">·</span>
+    <time datetime="{{ .Date }}">{{ .DateLabel }}</time>
+  </div>
+  <h2 class="news-lead__headline">
+    <a href="{{ .URL }}" rel="noopener noreferrer">{{ .Headline }}</a>
+  </h2>
+</article>
+{{ end }}
+
+{{/* ── news-row.html ──────────────────────────────────────────
+     Standard feed row. H3-scale headline. */}}
+{{ define "news-row" }}
+<article class="news-row">
+  <div class="news-row__meta">
+    <span>{{ .Source }}</span>
+    <span class="sep" aria-hidden="true">·</span>
+    <time datetime="{{ .Date }}">{{ .DateLabel }}</time>
+  </div>
+  <h3 class="news-row__headline">
+    <a href="{{ .URL }}" rel="noopener noreferrer">{{ .Headline }}</a>
+  </h3>
+</article>
+{{ end }}
+
+{{/* ── news-empty.html ────────────────────────────────────────
+     Calm empty state. No data fields required. */}}
+{{ define "news-empty" }}
+<div class="news__empty">
+  <p class="news__empty-title">No news yet</p>
+  <p class="news__empty-body">Items will appear here as they are added to the feed.</p>
+</div>
+{{ end }}

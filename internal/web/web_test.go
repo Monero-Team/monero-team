@@ -8,12 +8,20 @@ import (
 	"testing"
 
 	cstrings "github.com/Monero-Team/monero-team/internal/content/strings"
+	"github.com/Monero-Team/monero-team/internal/news"
 )
 
-// newTestServer builds the application handler or fails the test.
+// newTestServer builds the application handler (with an empty news store) or
+// fails the test.
 func newTestServer(t *testing.T) http.Handler {
 	t.Helper()
-	h, err := NewHandler()
+	return newTestServerWithNews(t, news.NewStore(0))
+}
+
+// newTestServerWithNews builds the handler backed by a specific news store.
+func newTestServerWithNews(t *testing.T, store *news.Store) http.Handler {
+	t.Helper()
+	h, err := NewHandler(store)
 	if err != nil {
 		t.Fatalf("NewHandler: %v", err)
 	}

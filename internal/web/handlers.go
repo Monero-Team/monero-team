@@ -7,14 +7,16 @@ import (
 
 	cstrings "github.com/Monero-Team/monero-team/internal/content/strings"
 	"github.com/Monero-Team/monero-team/internal/directory"
+	"github.com/Monero-Team/monero-team/internal/news"
 )
 
-// handler holds the parsed templates, the resolved sections, and the read-only
-// directory store, and serves the application's routes.
+// handler holds the parsed templates, the resolved sections, the read-only
+// directory store, and the news store, and serves the application's routes.
 type handler struct {
 	tmpl     templateSet
 	sections map[string]cstrings.Section
 	dir      *directory.Store
+	news     *news.Store
 }
 
 // home renders the landing page.

@@ -17,6 +17,7 @@ var pages = map[string][]string{
 	"resource":  {"templates/resource.html", "templates/resource-detail.html"},
 	"not-found": {"templates/not-found.html"},
 	"submit":    {"templates/submit.html", "templates/submit-form.html", "templates/submit-success.html"},
+	"news":      {"templates/news.html", "templates/news-feed.html"},
 }
 
 // templateSet holds one fully-parsed template per page. Because every page
